@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import styles from "../styles/styles";
-import icon1 from "../assets/icon1.png";
-import google from "../assets/google.png";
+import icon1 from "../../assets/icon1.png";
+import google from "../../assets/google.png";
 import tw from "twrnc";
 
 export default function WelcomeScreen({ navigation }) {
