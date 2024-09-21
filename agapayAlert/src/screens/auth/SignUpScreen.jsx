@@ -42,7 +42,8 @@ export default function SignUpScreen({ navigation }) {
       try {
         const hasPermission = await requestMediaLibraryPermissions();
         if (!hasPermission) {
-          Alert.alert('Sorry, we need camera roll permissions to make this work!');
+          setToastMessage('Sorry, we need camera roll permissions to make this work!');
+          setToastType('error');
         }
       } catch (error) {
         console.error("Permission error: ", error);
@@ -52,35 +53,29 @@ export default function SignUpScreen({ navigation }) {
     checkPermissions();
   }, []);
 
+  useEffect(() => {
+    if (message) {
+      setToastMessage(message);
+      setToastType('success');
+      navigation.navigate('verification', { email });
+    }
+    if (error) {
+      setToastMessage(error);
+      setToastType('error');
+    }
+  }, [message, error, navigation, email]);
+
   const handleSignUp = () => {
     const userData = { firstname, lastname, age, email, password, phone, avatar: selectedImage };
     dispatch(signup(userData));
   };
 
-  useEffect(() => {
-    if (message) {
-      setToastMessage(message);
-      setToastType('success');
-      setTimeout(() => {
-        setToastMessage(null);
-        navigation.navigate("verification");
-      }, 2000);
-    }
-
-    if (error) {
-      setToastMessage(error);
-      setToastType('error');
-      setTimeout(() => setToastMessage(null), 2000);
-    }
-  }, [message, error, navigation]);
-
   return (
-    
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-        <Toast message={toastMessage} type={toastType} />
+      <Toast message={toastMessage} type={toastType} />
       <ScrollView contentContainerStyle={tw`flex-1 justify-center items-center bg-[#050C9C]`}>
         <View>
           <HeaderIcon/>

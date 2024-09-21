@@ -61,3 +61,59 @@ export const signup = (userData) => async (dispatch) => {
     console.log(error)
   }
 };
+
+// Verify email action
+export const verifyEmail = (email, code) => async (dispatch) => {
+  try {
+    dispatch({ type: "verifyEmailRequest" });
+
+    const { data } = await axios.post(
+      `${server}/auth/verify`,
+      { email, code },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+
+    dispatch({
+      type: "verifyEmailSuccess",
+      payload: data.message,
+    });
+  } catch (error) {
+    dispatch({
+      type: "verifyEmailFail",
+      payload: error.response.data.message,
+    });
+  }
+};
+
+// Resend verification code action
+export const resendVerificationCode = (email) => async (dispatch) => {
+  try {
+    dispatch({ type: "resendVerificationCodeRequest" });
+
+    const { data } = await axios.post(
+      `${server}/auth/resend-verification`,
+      { email },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+
+    dispatch({
+      type: "resendVerificationCodeSuccess",
+      payload: data.message,
+    });
+  } catch (error) {
+    dispatch({
+      type: "resendVerificationCodeFail",
+      payload: error.response.data.message,
+    });
+  }
+};

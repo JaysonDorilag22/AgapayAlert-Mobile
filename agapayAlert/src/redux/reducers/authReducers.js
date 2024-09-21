@@ -37,6 +37,28 @@ export const authReducer = createReducer(initialState, (builder) => {
       state.isSignedUp = false;
       state.error = action.payload;
     })
+    .addCase("verifyEmailRequest", (state) => {
+      state.loading = true;
+    })
+    .addCase("verifyEmailSuccess", (state, action) => {
+      state.loading = false;
+      state.message = action.payload;
+    })
+    .addCase("verifyEmailFail", (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
+    .addCase("resendVerificationCodeRequest", (state) => {
+      state.loading = true;
+    })
+    .addCase("resendVerificationCodeSuccess", (state, action) => {
+      state.loading = false;
+      state.message = action.payload;
+    })
+    .addCase("resendVerificationCodeFail", (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
     .addCase("clearError", (state) => {
       state.error = null;
     })
