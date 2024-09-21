@@ -7,128 +7,171 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
-import * as ImagePicker from 'expo-image-picker';
+import { useDispatch, useSelector } from "react-redux";
+import { signup } from "../../redux/actions/authActions";
+import { pickImage, requestMediaLibraryPermissions } from "../../utils/imageUpload";
+import Toast from "../../components/Toast";
 import tw from 'twrnc';
 import styles from "../../styles/styles";
-import icon1 from "../../../assets/icon1.png";
 import avatar from "../../../assets/avatar.png";
+import HeaderIcon from "../../components/HeaderIcon";
 
 export default function SignUpScreen({ navigation }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [age, setAge] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [toastMessage, setToastMessage] = useState(null);
+  const [toastType, setToastType] = useState(null);
+
+  const dispatch = useDispatch();
+  const { loading, error, message } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    (async () => {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Sorry, we need camera roll permissions to make this work!');
+    const checkPermissions = async () => {
+      try {
+        const hasPermission = await requestMediaLibraryPermissions();
+        if (!hasPermission) {
+          Alert.alert('Sorry, we need camera roll permissions to make this work!');
+        }
+      } catch (error) {
+        console.error("Permission error: ", error);
       }
-    })();
+    };
+
+    checkPermissions();
   }, []);
 
-  const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Sorry, we need camera roll permissions to make this work!');
-      return;
-    }
-
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    console.log("Image Picker Result: ", result); // Debugging log
-
-    if (!result.canceled) {
-      const uri = result.assets[0].uri;
-      setIsLoading(true);
-      console.log("Image URI: ", uri); // Debugging log
-      // Simulate image upload
-      setTimeout(() => {
-        setSelectedImage(uri);
-        setIsLoading(false);
-        console.log("Upload successful, Image URI: ", uri); // Debugging log
-      }, 2000); // Simulate a 2-second upload time
-    }
+  const handleSignUp = () => {
+    const userData = { firstname, lastname, age, email, password, phone, avatar: selectedImage };
+    dispatch(signup(userData));
   };
 
-  return (
-    <View style={tw`flex-1 justify-center items-center bg-[#050C9C]`}>
-      <View>
-      <Image source={icon1} style={tw`w-30 h-30`} />
-      </View>
-      <View>
-        <Text style={tw`font-bold text-white text-26px mb-1 text-center`}>
-          Create Account
-        </Text>
-      </View>
-      <View style={tw`w-full flex-1 bg-[#F1FBFF] items-center  rounded`}>
-        <TouchableOpacity onPress={pickImage}>
-          {isLoading ? (
-            <ActivityIndicator size="large" color="#0000ff" />
-          ) : (
-            <Image 
-              source={selectedImage ? { uri: selectedImage } : avatar} 
-              style={[tw`w-20 h-20 mt-3`, { aspectRatio: 1, borderRadius: 40 }]} 
-            />
-          )}
-        </TouchableOpacity>
-        
-        <Text style={styles.textform}>First name</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="First name"
-        />
-        <Text style={styles.textform}>Last name</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Last name"
-        />
-        <Text style={styles.textform}>Age</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Age"
-          keyboardType="numeric"
-        />
-        <Text style={styles.textform}>Email</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          keyboardType="email-address"
-        />
-        <Text style={styles.textform}>Password</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          secureTextEntry
-        />
-        <Text style={styles.textform}>Phone</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="+63"
-          keyboardType="phone-pad"
-          maxLength={13} 
-        />
-        <TouchableOpacity
-          style={styles.buttonPrimary}
-          onPress={() => navigation.navigate("verification")}
-        >
-          <View style={styles.buttonContent}>
-            <Text style={styles.textWhite}>Sign Up</Text>
-          </View>
-        </TouchableOpacity>
+  useEffect(() => {
+    if (message) {
+      setToastMessage(message);
+      setToastType('success');
+      setTimeout(() => {
+        setToastMessage(null);
+        navigation.navigate("verification");
+      }, 2000);
+    }
 
-        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-          <Text>
-            Already have an account?{" "}
-            <Text style={{ color: "blue" }}>Log in</Text>
+    if (error) {
+      setToastMessage(error);
+      setToastType('error');
+      setTimeout(() => setToastMessage(null), 2000);
+    }
+  }, [message, error, navigation]);
+
+  return (
+    
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+        <Toast message={toastMessage} type={toastType} />
+      <ScrollView contentContainerStyle={tw`flex-1 justify-center items-center bg-[#050C9C]`}>
+        <View>
+          <HeaderIcon/>
+        </View>
+        <View>
+          <Text style={tw`font-bold text-white text-26px mb-1 text-center`}>
+            Create Account
           </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+        </View>
+        <View style={tw`w-full flex-1 bg-[#F1FBFF] items-center rounded`}>
+          <TouchableOpacity onPress={() => pickImage(setSelectedImage, setIsLoading)}>
+            <View style={tw`w-20 h-20 mt-3`}>
+              <Image 
+                source={selectedImage ? { uri: selectedImage } : avatar} 
+                style={[tw`w-full h-full`, { aspectRatio: 1, borderRadius: 40 }]} 
+              />
+              {isLoading && (
+                <View style={[tw`absolute top-0 left-0 w-full h-full justify-center items-center`, { backgroundColor: 'rgba(255, 255, 255, 0.7)', borderRadius: 40 }]}>
+                  <ActivityIndicator size="large" color="#0000ff" />
+                </View>
+              )}
+            </View>
+          </TouchableOpacity>
+          
+          <Text style={styles.textform}>First name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="First name"
+            value={firstname}
+            onChangeText={setFirstname}
+          />
+          <Text style={styles.textform}>Last name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Last name"
+            value={lastname}
+            onChangeText={setLastname}
+          />
+          <Text style={styles.textform}>Age</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Age"
+            value={age}
+            onChangeText={setAge}
+            keyboardType="numeric"
+          />
+          <Text style={styles.textform}>Email</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+          />
+          <Text style={styles.textform}>Password</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+          <Text style={styles.textform}>Phone</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="+63"
+            value={phone}
+            onChangeText={setPhone}
+            keyboardType="phone-pad"
+            maxLength={13} 
+          />
+          <TouchableOpacity
+            style={styles.buttonPrimary}
+            onPress={handleSignUp}
+            disabled={loading}
+          >
+            <View style={styles.buttonContent}>
+              {loading ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text style={styles.textWhite}>Sign Up</Text>
+              )}
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+            <Text>
+              Already have an account?{" "}
+              <Text style={{ color: "blue" }}>Log in</Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

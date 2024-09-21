@@ -10,6 +10,7 @@ import styles from "../../styles/styles";
 import icon1 from "../../../assets/icon1.png";
 import verification from "../../../assets/verification.png";
 import tw from "twrnc";
+import HeaderIcon from "../../components/HeaderIcon";
 
 export default function EmailVerification({ navigation }) {
   const input1 = useRef(null);
@@ -31,7 +32,7 @@ export default function EmailVerification({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Image source={icon1} style={tw`w-30 h-30 mt-2`} />
+    <HeaderIcon/>
       <View>
         <Text style={tw`font-bold text-white text-26px mb-1 text-center`}>
           Verification

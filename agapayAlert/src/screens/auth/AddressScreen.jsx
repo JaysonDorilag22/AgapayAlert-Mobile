@@ -4,11 +4,12 @@ import { View, Text, TouchableOpacity, Image, TextInput } from "react-native";
 import styles from "../../styles/styles";
 import icon1 from "../../../assets/icon1.png";
 import tw from "twrnc";
+import HeaderIcon from "../../components/HeaderIcon";
 
 export default function AddressScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Image source={icon1} style={tw`w-30 h-30 mt-2`} />
+      <HeaderIcon/>
       <View>
         <Text style={tw`font-bold text-white text-26px text-center mb-1`}>
           Address

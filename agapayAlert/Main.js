@@ -7,6 +7,8 @@ import SignUpScreen from './src/screens/auth/SignUpScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import EmailVerification from './src/screens/auth/EmailVerification';
 import AddressScreen from './src/screens/auth/AddressScreen';
+import NavigationBar from './src/components/NavigationBar';
+// import SampleScreen from './src/screens/SampleScreen';
 
 
 
@@ -22,8 +24,9 @@ export default function Main() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="verification" component={EmailVerification} />
         <Stack.Screen name="Address" component={AddressScreen} />
-
+        {/* <Stack.Screen name="Sample" component={SampleScreen} /> */}
       </Stack.Navigator>
+      {/* <NavigationBar/> */}
     </NavigationContainer>
   );
 }
