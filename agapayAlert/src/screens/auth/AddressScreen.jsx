@@ -1,10 +1,8 @@
-// src/screens/auth/SignUpScreen.js
 import React from "react";
 import { View, Text, TouchableOpacity, Image, TextInput } from "react-native";
-import styles from "../../styles/styles";
-import icon1 from "../../../assets/icon1.png";
+import styles from "@styles/styles";
 import tw from "twrnc";
-import HeaderIcon from "../../components/HeaderIcon";
+import HeaderIcon from "@components/HeaderIcon";
 
 export default function AddressScreen({ navigation }) {
   return (

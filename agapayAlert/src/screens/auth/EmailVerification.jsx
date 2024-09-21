@@ -6,11 +6,10 @@ import {
   Image,
   TextInput,
 } from "react-native";
-import styles from "../../styles/styles";
-import icon1 from "../../../assets/icon1.png";
-import verification from "../../../assets/verification.png";
+import styles from "@styles/styles";
+import verification from "@assets/verification.png";
 import tw from "twrnc";
-import HeaderIcon from "../../components/HeaderIcon";
+import HeaderIcon from "@components/HeaderIcon";
 
 export default function EmailVerification({ navigation }) {
   const input1 = useRef(null);

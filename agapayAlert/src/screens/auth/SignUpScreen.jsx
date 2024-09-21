@@ -12,13 +12,14 @@ import {
   Platform,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { signup } from "../../redux/actions/authActions";
-import { pickImage, requestMediaLibraryPermissions } from "../../utils/imageUpload";
-import Toast from "../../components/Toast";
+import { signup } from "@redux/actions/authActions";
+import { pickImage, requestMediaLibraryPermissions } from "@utils/imageUpload";
+import Toast from "@components/Toast";
 import tw from 'twrnc';
-import styles from "../../styles/styles";
-import avatar from "../../../assets/avatar.png";
-import HeaderIcon from "../../components/HeaderIcon";
+import styles from "@styles/styles";
+import avatar from "@assets/avatar.png";
+import HeaderIcon from "@components/HeaderIcon";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function SignUpScreen({ navigation }) {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -31,6 +32,7 @@ export default function SignUpScreen({ navigation }) {
   const [phone, setPhone] = useState("");
   const [toastMessage, setToastMessage] = useState(null);
   const [toastType, setToastType] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const dispatch = useDispatch();
   const { loading, error, message } = useSelector((state) => state.auth);
@@ -134,13 +136,25 @@ export default function SignUpScreen({ navigation }) {
             keyboardType="email-address"
           />
           <Text style={styles.textform}>Password</Text>
+          <View style={tw`relative w-full mb-1 w-3/4`}>
           <TextInput
-            style={styles.input}
+            style={tw`h-12 border border-[#8BACB8] rounded py-3 px-5 text-base`}
             placeholder="Password"
+            secureTextEntry={!showPassword}
             value={password}
             onChangeText={setPassword}
-            secureTextEntry
           />
+          <TouchableOpacity
+            onPress={() => setShowPassword(!showPassword)}
+            style={tw`absolute right-0 top-0 h-full justify-center pr-3`}
+          >
+            <Ionicons
+              name={showPassword ? "eye-off" : "eye"}
+              size={24}
+              color="grey"
+            />
+          </TouchableOpacity>
+        </View>
           <Text style={styles.textform}>Phone</Text>
           <TextInput
             style={styles.input}

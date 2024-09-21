@@ -8,12 +8,12 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import styles from "../../styles/styles";
-import icon1 from "../../../assets/icon1.png";
-import google from "../../../assets/google.png";
-import { login } from "../../redux/actions/authActions";
+import styles from "@styles/styles";
+import icon1 from "@assets/icon1.png";
+import google from "@assets/google.png";
+import { login } from "@redux/actions/authActions";
 import tw from "twrnc";
-import Toast from "../../components/Toast";
+import Toast from "@components/Toast";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function LoginScreen({ navigation }) {
