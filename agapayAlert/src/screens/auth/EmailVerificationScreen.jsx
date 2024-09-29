@@ -7,9 +7,9 @@ import verification from "@assets/verification.png";
 import tw from "twrnc";
 import HeaderIcon from "@components/HeaderIcon";
 import { verifyEmail, resendVerificationCode } from "@redux/actions/authActions";
-import Toast from "@components/Toast";
+import Toast from "react-native-toast-message";
 
-export default function EmailVerification({ navigation, route }) {
+export default function EmailVerificationScreen({ navigation, route }) {
   const email = route?.params?.email; // Safely access email from route.params
   const dispatch = useDispatch();
   const { loading, error, message } = useSelector((state) => state.auth);
@@ -21,8 +21,6 @@ export default function EmailVerification({ navigation, route }) {
 
   const [code, setCode] = useState(["", "", "", ""]);
   const [timer, setTimer] = useState(60); // 60 seconds timer
-  const [toastMessage, setToastMessage] = useState(null);
-  const [toastType, setToastType] = useState(null);
 
   const handleTextChange = (text, index) => {
     const newCode = [...code];
@@ -56,16 +54,23 @@ export default function EmailVerification({ navigation, route }) {
 
   useEffect(() => {
     if (message === "Verification successful" || message === "Email is already verified") {
-      setToastMessage(message);
-      setToastType("success");
-      navigation.navigate("Address");
+      Toast.show({
+        type: "success",
+        text1: message,
+      });
+      resetInputs();
+      navigation.navigate("verified");
     } else if (message) {
-      setToastMessage(message);
-      setToastType("success");
+      Toast.show({
+        type: "success",
+        text1: message,
+      });
     }
     if (error) {
-      setToastMessage(error);
-      setToastType("error");
+      Toast.show({
+        type: "error",
+        text1: error,
+      });
     }
   }, [message, error, navigation]);
 
@@ -84,10 +89,14 @@ export default function EmailVerification({ navigation, route }) {
       setCode(["", "", "", ""]);
     }, [])
   );
+
+  const resetInputs = () => {
+    setCode(["", "", "", ""]);
+  };
+
   return (
     <View style={styles.container}>
       <HeaderIcon />
-      <Toast message={toastMessage} type={toastType} />
       <View>
         <Text style={tw`font-bold text-white text-26px mb-1 text-center`}>
           Verification
@@ -108,6 +117,7 @@ export default function EmailVerification({ navigation, route }) {
             maxLength={1}
             onChangeText={(text) => handleTextChange(text, 0)}
             onKeyPress={(e) => handleKeyPress(e, 0)}
+            value={code[0]}
           />
           <TextInput
             ref={input2}
@@ -116,6 +126,7 @@ export default function EmailVerification({ navigation, route }) {
             maxLength={1}
             onChangeText={(text) => handleTextChange(text, 1)}
             onKeyPress={(e) => handleKeyPress(e, 1)}
+            value={code[1]}
           />
           <TextInput
             ref={input3}
@@ -124,6 +135,7 @@ export default function EmailVerification({ navigation, route }) {
             maxLength={1}
             onChangeText={(text) => handleTextChange(text, 2)}
             onKeyPress={(e) => handleKeyPress(e, 2)}
+            value={code[2]}
           />
           <TextInput
             ref={input4}
@@ -132,6 +144,7 @@ export default function EmailVerification({ navigation, route }) {
             maxLength={1}
             onChangeText={(text) => handleTextChange(text, 3)}
             onKeyPress={(e) => handleKeyPress(e, 3)}
+            value={code[3]}
           />
         </View>
         <TouchableOpacity onPress={handleResendCode} disabled={timer > 0}>

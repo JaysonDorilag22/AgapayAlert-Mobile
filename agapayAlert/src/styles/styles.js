@@ -17,9 +17,10 @@ const styles = {
   icon: tw`w-70 h-70`, 
   form: tw`w-full flex-1 bg-[#F1FBFF] items-center pt-10 rounded`,
   form2: tw`w-full  bg-[#F1FBFF] items-center p-5 rounded`,
-  input: tw`py-3 px-5 rounded  w-3/4 m-1 border border-[#8BACB8]`,
+  input: tw`py-2 px-4 rounded  w-3/4 m-1 border border-[#8BACB8]`,
   textform: tw`text-left w-full ml-25 font-semibold`,
-  verificationInput: tw`border-2 rounded border-[#8BACB8] text-center w-15 h-15 font-bold p-2 m-2`
+  verificationInput: tw`border-2 rounded border-[#8BACB8] text-center w-15 h-15 font-bold p-2 m-2`,
+  errorText: tw`ml-25 w-full text-red-500 text-sm`,
 };
 
 export default styles;

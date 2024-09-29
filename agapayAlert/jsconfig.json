@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "baseUrl": "./",
+      "paths": {
+        "@screens/*": ["src/screens/*"],
+        "@components/*": ["src/components/*"],
+        "@assets/*": ["assets/*"],
+        "@redux/*": ["src/redux/*"],
+        "@styles/*": ["src/styles/*"],
+        "@utils/*": ["src/utils/*"],
+        "@validations/*": ["src/validations/*"]
+
+      }
+    },
+    "include": ["src/**/*"]
+  }

@@ -10,6 +10,8 @@ const store = configureStore({
 });
 
 // export const server = "http://192.168.254.150:5000/api/";
+// export const server = "http://172.34.9.216:5000/api/";
+
 export const server = "https://agapayalert-api.onrender.com/api";
 
 export default store;

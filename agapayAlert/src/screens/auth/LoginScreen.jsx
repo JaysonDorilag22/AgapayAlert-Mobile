@@ -13,15 +13,13 @@ import icon1 from "@assets/icon1.png";
 import google from "@assets/google.png";
 import { login } from "@redux/actions/authActions";
 import tw from "twrnc";
-import Toast from "@components/Toast";
 import { Ionicons } from "@expo/vector-icons";
+import Toast from "react-native-toast-message";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastType, setToastType] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const dispatch = useDispatch();
@@ -29,19 +27,23 @@ export default function LoginScreen({ navigation }) {
 
   useEffect(() => {
     if (isAuthenticated) {
-      setToastMessage("Login successful!");
-      setToastType("success");
+      Toast.show({
+        type: "success",
+        text1: "Login successful!",
+      });
       navigation.navigate("Home");
     } else if (error) {
-      setToastMessage(error);
-      setToastType("error");
+      Toast.show({
+        type: "error",
+        text1: error,
+      });
     }
     setLoading(false);
   }, [isAuthenticated, error, navigation]);
 
   const handleLogin = async () => {
     setLoading(true);
-    await dispatch(login(email, password));
+    dispatch(login(email, password));
   };
 
   return (
@@ -105,11 +107,7 @@ export default function LoginScreen({ navigation }) {
           </Text>
         </TouchableOpacity>
       </View>
-      <Toast
-        message={toastMessage}
-        type={toastType}
-        onDismiss={() => setToastMessage("")}
-      />
+      <Toast />
     </View>
   );
 }
