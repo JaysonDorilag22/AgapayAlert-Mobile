@@ -26,7 +26,7 @@ export default function SignUpStep3({
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null); // Add this line
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const checkPermissions = async () => {
@@ -91,8 +91,9 @@ export default function SignUpStep3({
         onPress={() =>
           pickImage(
             (uri) => {
-              setFormData({ ...formData, avatar: uri });
-              setSelectedImage(uri); // Update this line
+              console.log("Selected Image URI: ", uri); // Debugging log
+              setFormData("avatar", uri); // Update the avatar field correctly
+              setSelectedImage(uri);
             },
             setIsLoading
           )
