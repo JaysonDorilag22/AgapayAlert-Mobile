@@ -26,6 +26,7 @@ export default function SignUpStep3({
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null); // Add this line
 
   useEffect(() => {
     const checkPermissions = async () => {
@@ -89,14 +90,17 @@ export default function SignUpStep3({
       <TouchableOpacity
         onPress={() =>
           pickImage(
-            (uri) => setFormData({ ...formData, avatar: uri }),
+            (uri) => {
+              setFormData({ ...formData, avatar: uri });
+              setSelectedImage(uri); // Update this line
+            },
             setIsLoading
           )
         }
       >
         <View style={tw`w-15 h-15 mt-3`}>
           <Image
-            source={formData.avatar ? { uri: formData.avatar } : avatar}
+            source={selectedImage ? { uri: selectedImage } : avatar} 
             style={[tw`w-full h-full`, { aspectRatio: 1, borderRadius: 40 }]}
           />
           {isLoading && (
