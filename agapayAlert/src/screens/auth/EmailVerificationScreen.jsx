@@ -7,7 +7,7 @@ import verification from "@assets/verification.png";
 import tw from "twrnc";
 import HeaderIcon from "@components/HeaderIcon";
 import { verifyEmail, resendVerificationCode } from "@redux/actions/authActions";
-import Toast from "react-native-toast-message";
+import { showToast } from "@utils/toastService";
 
 export default function EmailVerificationScreen({ navigation, route }) {
   const email = route?.params?.email; // Safely access email from route.params
@@ -49,28 +49,17 @@ export default function EmailVerificationScreen({ navigation, route }) {
 
   const handleResendCode = () => {
     dispatch(resendVerificationCode(email));
-    setTimer(60); // Reset timer to 60 seconds
+    setTimer(60);
   };
 
   useEffect(() => {
     if (message === "Verification successful" || message === "Email is already verified") {
-      Toast.show({
-        type: "success",
-        text1: message,
-      });
+      showToast("success", message);
       resetInputs();
       navigation.navigate("verified");
-    } else if (message) {
-      Toast.show({
-        type: "success",
-        text1: message,
-      });
     }
-    if (error) {
-      Toast.show({
-        type: "error",
-        text1: error,
-      });
+    else if (error) {
+      showToast("error", error);
     }
   }, [message, error, navigation]);
 
@@ -85,7 +74,6 @@ export default function EmailVerificationScreen({ navigation, route }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      // Reset the code input fields when the screen comes into focus
       setCode(["", "", "", ""]);
     }, [])
   );

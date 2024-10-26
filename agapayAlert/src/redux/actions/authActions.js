@@ -1,4 +1,4 @@
-import { server } from "../store";
+import { server, axiosConfig } from "../store";
 import axios from "axios";
 
 export const login = (email, password) => async (dispatch) => {
@@ -6,21 +6,14 @@ export const login = (email, password) => async (dispatch) => {
     dispatch({
       type: "loginRequest",
     });
-
     const { data } = await axios.post(
       `${server}/auth/login`,
       {
         email,
         password,
       },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
+      axiosConfig
     );
-
     dispatch({
       type: "loginSuccess",
       payload: data.message,
@@ -37,18 +30,11 @@ export const login = (email, password) => async (dispatch) => {
 export const signup = (userData) => async (dispatch) => {
   try {
     dispatch({ type: "signupRequest" });
-
     const { data } = await axios.post(
       `${server}/auth/`,
       userData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
+      axiosConfig
     );
-
     dispatch({
       type: "signupSuccess",
       payload: data.message,
@@ -56,7 +42,7 @@ export const signup = (userData) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: "signupFail",
-      payload: error.response?.data?.message || "Something went wrong",
+      payload: error.response?.data?.message,
     });
     console.log(error)
   }
@@ -66,18 +52,12 @@ export const signup = (userData) => async (dispatch) => {
 export const verifyEmail = (email, code) => async (dispatch) => {
   try {
     dispatch({ type: "verifyEmailRequest" });
-
     const { data } = await axios.post(
       `${server}/auth/verify`,
       { email, code },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
-    );
+      axiosConfig
 
+    );
     dispatch({
       type: "verifyEmailSuccess",
       payload: data.message,
@@ -94,18 +74,11 @@ export const verifyEmail = (email, code) => async (dispatch) => {
 export const resendVerificationCode = (email) => async (dispatch) => {
   try {
     dispatch({ type: "resendVerificationCodeRequest" });
-
     const { data } = await axios.post(
       `${server}/auth/resend-verification`,
       { email },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
+      axiosConfig
     );
-
     dispatch({
       type: "resendVerificationCodeSuccess",
       payload: data.message,

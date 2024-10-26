@@ -14,7 +14,7 @@ import google from "@assets/google.png";
 import { login } from "@redux/actions/authActions";
 import tw from "twrnc";
 import { Ionicons } from "@expo/vector-icons";
-import Toast from "react-native-toast-message";
+import { showToast } from "@utils/toastService";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -25,25 +25,17 @@ export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
   const { isAuthenticated, error } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      Toast.show({
-        type: "success",
-        text1: "Login successful!",
-      });
-      navigation.navigate("Home");
-    } else if (error) {
-      Toast.show({
-        type: "error",
-        text1: error,
-      });
-    }
-    setLoading(false);
-  }, [isAuthenticated, error, navigation]);
-
   const handleLogin = async () => {
     setLoading(true);
-    dispatch(login(email, password));
+     dispatch(login(email, password));
+
+    if (isAuthenticated) {
+      showToast("success", "Login successful");
+      navigation.navigate("Home");
+    } else if (error) {
+      showToast("error", error);
+    }
+    setLoading(false);
   };
 
   return (
@@ -107,7 +99,6 @@ export default function LoginScreen({ navigation }) {
           </Text>
         </TouchableOpacity>
       </View>
-      <Toast />
     </View>
   );
 }

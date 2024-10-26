@@ -10,8 +10,8 @@ import {
 import { pickImage, requestMediaLibraryPermissions } from "@utils/imageUpload";
 import avatar from "@assets/avatar.png";
 import tw from "twrnc";
-import Toast from "react-native-toast-message";
 import styles from "@styles/styles";
+import { showToast } from "@utils/toastService";
 
 export default function SignUpStep3({
   prevStep,
@@ -33,10 +33,7 @@ export default function SignUpStep3({
       try {
         const hasPermission = await requestMediaLibraryPermissions();
         if (!hasPermission) {
-          Toast.show({
-            type: "error",
-            text1: "Sorry, we need camera roll permissions to make this work!",
-          });
+         showToast("error", "Permission denied");
         }
       } catch (error) {
         console.error("Permission error: ", error);
@@ -51,33 +48,20 @@ export default function SignUpStep3({
     const errors = await validateForm();
     if (Object.keys(errors).length > 0) {
       const errorMessages = Object.values(errors).join(', ');
-      Toast.show({
-        type: 'error',
-        text1: errorMessages,
-      });
+      showToast("error", errorMessages);
       return;
     }
-
     // Check if passwords match
     if (formData.password !== formData.confirmPassword) {
-      Toast.show({
-        type: 'error',
-        text1: 'Passwords do not match',
-      });
+      showToast("error", "Passwords do not match");
       return;
     }
-
     setLoading(true);
     try {
       await handleSignUp();
     } catch (error) {
       console.error("Sign up error: ", error);
-      // Display backend validation errors
-      Toast.show({
-        type: 'error',
-        text1: 'Sign up failed',
-        text2: error.message,
-      });
+      showToast("error", "Sign up failed");
       setLoading(false);
       return;
     }

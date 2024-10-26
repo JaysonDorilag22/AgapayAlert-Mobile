@@ -2,9 +2,6 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { useDispatch } from "react-redux";
 import { Formik } from "formik";
-import Toast from "react-native-toast-message";
-import tw from "twrnc";
-import styles from "@styles/styles";
 import SignUpStep1 from "./SignUpStep1";
 import SignUpStep2 from "./SignUpStep2";
 import SignUpStep3 from "./SignUpStep3";
@@ -13,6 +10,7 @@ import ProgressBar from "@components/ProgressBar";
 import { signUpStep1Schema } from "@validations/signUpStep1";
 import { signUpStep2Schema } from "@validations/signUpStep2";
 import { signUpStep3Schema } from "@validations/signUpStep3";
+import { showToast } from "@utils/toastService";
 
 export default function SignUpScreen({ navigation }) {
   const [step, setStep] = useState(1);
@@ -50,10 +48,7 @@ export default function SignUpScreen({ navigation }) {
       setStep(step + 1);
     } else {
       const errorMessages = extractErrorMessages(errors).join(', ');
-      Toast.show({
-        type: 'error',
-        text1: errorMessages,
-      });
+      showToast("error", errorMessages);
     }
   };
 
@@ -63,10 +58,7 @@ export default function SignUpScreen({ navigation }) {
     try {
       console.log("Form Data:", values); // Log formData before sending it to the backend
       await dispatch(signup(values));
-      Toast.show({
-        type: 'success',
-        text1: 'Sign up successful',
-      });
+      showToast("success", "Sign up successful. Please verify your email.");
       navigation.navigate('verification', { email: values.email });
     } catch (error) {
       throw new Error(error.response?.data?.message || error.message);
