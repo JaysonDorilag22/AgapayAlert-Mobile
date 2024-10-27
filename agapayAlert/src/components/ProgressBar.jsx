@@ -11,7 +11,7 @@ const ProgressBar = ({ step, totalSteps }) => {
        <Image source={logo1} style={tw`w-30 h-30`} />
       <Text style={tw`mb-2 text-lg`}>Step {step} of {totalSteps}</Text>
       <View style={tw`w-50`}>
-        <Progress.Bar progress={progress} width={200} />
+        <Progress.Bar progress={progress} width={200} height={10} />
       </View>
     </View>
   );

@@ -1,10 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import sampleReducer from './slices/sampleSlice';
 import { authReducer } from './reducers/authReducers';
 import { userReducer } from './reducers/userReducers';
 const store = configureStore({
   reducer: {
-    sample: sampleReducer,
     auth: authReducer,
     user: userReducer,
   },
@@ -15,7 +13,7 @@ const store = configureStore({
 
 
 //kapehan
-export const server = "http://192.168.68.110:5000/api";
+export const server = "http://192.168.68.107:5000/api";
 
 // export const server = "https://agapayalert-api.onrender.com/api";
 

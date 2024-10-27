@@ -6,7 +6,7 @@ import styles from "@styles/styles";
 import verification from "@assets/verification.png";
 import tw from "twrnc";
 import HeaderIcon from "@components/HeaderIcon";
-import { verifyEmail, resendVerificationCode } from "@redux/actions/authActions";
+import { verifyEmail, resendVerificationCode, clearError } from "@redux/actions/authActions";
 import { showToast } from "@utils/toastService";
 
 export default function EmailVerificationScreen({ navigation, route }) {
@@ -43,25 +43,29 @@ export default function EmailVerificationScreen({ navigation, route }) {
   };
 
   const handleSubmit = () => {
+    try {
     const verificationCode = code.join("");
-    dispatch(verifyEmail(email, verificationCode));
+      dispatch(verifyEmail(email, verificationCode));
+      console.log("Email verification code:", verificationCode);
+      console.log("Account verified");
+      showToast("success", "Account verified successfully");
+      resetInputs();
+      navigation.navigate("verified");
+    } catch (error) {
+      console.error("Error verifying email:", error);
+      dispatch(clearError());
+    }
   };
 
   const handleResendCode = () => {
-    dispatch(resendVerificationCode(email));
-    setTimer(60);
+    try {
+      dispatch(resendVerificationCode(email));
+      setTimer(60);
+    } catch (error) {
+      console.error("Error resending verification code:", error);
+      dispatch(clearError());
+    }
   };
-
-  useEffect(() => {
-    if (message === "Verification successful" || message === "Email is already verified") {
-      showToast("success", message);
-      resetInputs();
-      navigation.navigate("verified");
-    }
-    else if (error) {
-      showToast("error", error);
-    }
-  }, [message, error, navigation]);
 
   useEffect(() => {
     if (timer > 0) {

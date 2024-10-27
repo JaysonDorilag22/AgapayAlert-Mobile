@@ -150,7 +150,7 @@ export default function SignUpStep3({
           disabled={loading}
         >
           {loading ? (
-            <ActivityIndicator color="#324" />
+            <ActivityIndicator color="#fff" />
           ) : (
             <Text style={styles.textPrimary}>Sign Up</Text>
           )}

@@ -5,7 +5,7 @@ import { Formik } from "formik";
 import SignUpStep1 from "./SignUpStep1";
 import SignUpStep2 from "./SignUpStep2";
 import SignUpStep3 from "./SignUpStep3";
-import { signup } from "@redux/actions/authActions";
+import { signup, clearError } from "@redux/actions/authActions";
 import ProgressBar from "@components/ProgressBar";
 import { signUpStep1Schema } from "@validations/signUpStep1";
 import { signUpStep2Schema } from "@validations/signUpStep2";
@@ -32,7 +32,7 @@ export default function SignUpScreen({ navigation }) {
   const extractErrorMessages = (errors) => {
     const messages = [];
     for (const key in errors) {
-      if (typeof errors[key] === 'object') {
+      if (typeof errors[key] === "object") {
         messages.push(...extractErrorMessages(errors[key]));
       } else {
         messages.push(errors[key]);
@@ -43,28 +43,29 @@ export default function SignUpScreen({ navigation }) {
 
   const nextStep = async (validateForm) => {
     const errors = await validateForm();
-    console.log("Validation Errors:", errors); 
+    console.log("Validation Errors:", errors);
     if (Object.keys(errors).length === 0) {
       setStep(step + 1);
     } else {
-      const errorMessages = extractErrorMessages(errors).join(', ');
+      const errorMessages = extractErrorMessages(errors).join(", ");
       showToast("error", errorMessages);
     }
   };
 
   const prevStep = () => setStep(step - 1);
 
-  const handleSignUp = async (values) => {
+  const handleSignUp = async (values, {resetForm}) => {
     try {
-      console.log("Form Data:", values); // Log formData before sending it to the backend
-      await dispatch(signup(values));
-      showToast("success", "Sign up successful. Please verify your email.");
-      navigation.navigate('verification', { email: values.email });
+      dispatch(signup(values));
+      navigation.navigate("verification", { email: values.email });
+      resetForm();
+      setStep(1);
     } catch (error) {
-      throw new Error(error.response?.data?.message || error.message);
+      console.log("Sign up error:", error);
+      showToast("error", error);
+      dispatch(clearError());
     }
   };
-
   return (
     <Formik
       initialValues={{
@@ -87,7 +88,16 @@ export default function SignUpScreen({ navigation }) {
       validationSchema={getValidationSchema()}
       onSubmit={handleSignUp}
     >
-      {({ values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue, validateForm }) => (
+      {({
+        values,
+        errors,
+        touched,
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        setFieldValue,
+        validateForm,
+      }) => (
         <View style={{ flex: 1 }}>
           <ProgressBar step={step} totalSteps={3} />
           {step === 1 && (
