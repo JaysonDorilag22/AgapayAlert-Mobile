@@ -13,7 +13,12 @@ const store = configureStore({
 
 
 //kapehan
-export const server = "http://192.168.68.107:5000/api";
+// export const server = "http://192.168.68.107:5000/api";
+
+
+//phone ko
+export const server = "http://192.168.115.191:5000/api";
+
 
 // export const server = "https://agapayalert-api.onrender.com/api";
 
