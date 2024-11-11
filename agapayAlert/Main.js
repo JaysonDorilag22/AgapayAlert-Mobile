@@ -5,6 +5,9 @@ import WelcomeScreen from '@screens/WelcomeScreen';
 import LoginScreen from '@screens/auth/LoginScreen';
 import SignUpScreen from '@screens/auth/SignUpScreen';
 import HomeScreen from '@screens/HomeScreen';
+import ReportScreen from '@screens/ReportScreen';
+import CitiesScreen from '@screens/CitiesScreen';
+import NotificationScreen from '@screens/NotificationScreen';
 import EmailVerificationScreen from '@screens/auth/EmailVerificationScreen';
 import AddressScreen from '@screens/auth/AddressScreen';
 import NavigationBar from '@components/NavigationBar';
@@ -24,6 +27,9 @@ export default function Main() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Report" component={ReportScreen} />
+        <Stack.Screen name="Cities" component={CitiesScreen} />
+        <Stack.Screen name="Notification" component={NotificationScreen} />
         <Stack.Screen name="verification" component={EmailVerificationScreen} />
         <Stack.Screen name="Address" component={AddressScreen} />
         {/* <Stack.Screen name="Sample" component={SampleScreen} /> */}

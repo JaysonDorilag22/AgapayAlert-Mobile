@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { authReducer } from './reducers/authReducers';
 import { userReducer } from './reducers/userReducers';
+import { reportReducer } from './reducers/reportReducers';
 const store = configureStore({
   reducer: {
     auth: authReducer,
     user: userReducer,
+    /* report: reportReducer, */
   },
 });
 
@@ -13,11 +15,19 @@ const store = configureStore({
 
 
 //kapehan
-// export const server = "http://192.168.68.107:5000/api";
+// export const server = "http://192.168.68.113:5000/api";
 
+// jm haus
+// export const server = "http://192.168.0.57:5000/api";
 
 //phone ko
-export const server = "http://192.168.115.191:5000/api";
+// export const server = "http://192.168.115.191:5000/api";
+
+// wanel haus
+export const server = "http://192.168.100.214:5000/api";
+
+//wanel cp
+// export const server = "http://192.168.43.129:5000/api";
 
 
 // export const server = "https://agapayalert-api.onrender.com/api";

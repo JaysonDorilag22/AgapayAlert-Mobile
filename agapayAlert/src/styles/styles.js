@@ -21,6 +21,8 @@ const styles = {
   textform: tw`text-left w-full ml-25 font-semibold`,
   verificationInput: tw`border-2  border-[#8BACB8] text-center w-15 h-15 font-bold p-2 m-2`,
   errorText: tw`ml-25 w-full text-red-500 text-sm`,
+  submenuItem: tw`p-5 text-[#007BFF]`,
+  title: tw`text-3xl font-bold text-center`,
 };
 
 export default styles;
