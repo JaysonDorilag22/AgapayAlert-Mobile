@@ -18,10 +18,24 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon1.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.jaysonarticonadorilag.agapayAlert"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.830062945680-aamae289uf9ul6hs33dlsfqi7crvm2g5"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "30a4be0a-5404-4be7-8803-3463bd725f19"
+      }
     }
   }
 }
