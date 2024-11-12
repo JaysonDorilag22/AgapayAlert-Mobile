@@ -6,7 +6,7 @@ const store = configureStore({
   reducer: {
     auth: authReducer,
     user: userReducer,
-    /* report: reportReducer, */
+    report: reportReducer,
   },
 });
 
@@ -24,7 +24,7 @@ const store = configureStore({
 // export const server = "http://192.168.115.191:5000/api";
 
 // wanel haus
-export const server = "http://192.168.100.214:5000/api";
+export const server = "http://192.168.68.132:5000/api";
 
 //wanel cp
 // export const server = "http://192.168.43.129:5000/api";
