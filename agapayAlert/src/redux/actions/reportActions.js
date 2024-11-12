@@ -1,4 +1,4 @@
- import { axiosConfig } from "@redux/store";
+ import { axiosConfig, server } from "@redux/store";
 import axios from "axios";
 import {
   GET_REPORTS_REQUEST,
@@ -19,8 +19,9 @@ import {
 import { asyncHandler } from "@utils/asyncHandler";
 
 const getReportsAsync = async () => {
-    const { data } = await axios.get("/reports", axiosConfig);
-    return data.reports;
+    const { data } = await axios.get(`${server}/reports/getall`, axiosConfig);
+    console.log('Fetched Data:', data);
+    return data.data;
     };
 
 const addReportAsync = async (reportData) => {  

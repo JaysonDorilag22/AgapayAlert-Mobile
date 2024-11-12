@@ -39,16 +39,16 @@ export default function HomeScreen() {
       <View style={tw`flex-row justify-around pt-4`}>
           <Image 
               source={require('../../assets/Click.png')} 
-              style={tw`w-50 h-50`} 
+              style={tw`w-55 h-55`} 
               resizeMode="contain"
           />
       </View>
-      <View style={tw`flex-row justify-around p-6`}>
+      <View style={tw`flex-row justify-around p-4`}>
         <Text style={tw`text-gray-700 text-center`}>Report missing persons here and help us bring them home by clicking the button below.</Text>
       </View>
       <View style={tw`flex-row justify-around pt-15`}>
-        <TouchableOpacity style={[tw` p-6 rounded-full`, { backgroundColor: '#123f7b' }]} onPress={() => navigation.navigate('Cities')}>
-          <Text style={tw`text-white text-center`}>QUICK REPORT</Text>
+        <TouchableOpacity style={[tw` p-6 px-20 rounded-full shadow-lg`, { backgroundColor: '#123f7b' }]} onPress={() => navigation.navigate('Report')}>
+          <Text style={tw`text-white text-center`}>Seek Now</Text>
         </TouchableOpacity>
       </View>
 

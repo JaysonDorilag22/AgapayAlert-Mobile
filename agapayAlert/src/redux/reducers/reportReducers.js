@@ -28,10 +28,12 @@ export const reportReducer = createReducer(initialState, (builder) => {
       state.loading = true;
     })
     .addCase(GET_REPORTS_SUCCESS, (state, action) => {
+      console.log('Reports:', action.payload);
       state.loading = false;
       state.reports = action.payload;
     })
     .addCase(GET_REPORTS_FAIL, (state, action) => {
+      console.log('Reports Fetch Failed:', action.payload);
       state.loading = false;
       state.error = action.payload;
     })
