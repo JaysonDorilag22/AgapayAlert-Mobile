@@ -1,6 +1,6 @@
 // HomeScreen.jsx
-import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, Image, Modal } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { logout } from '@redux/actions/userActions';
@@ -9,10 +9,25 @@ import styles from '@styles/styles';
 import tw from "twrnc";
 import { Video } from 'expo-av'; 
 import NavigationBar from '@components/NavigationBar'; // Ensure this path is correct
+import ConfirmReport from './Report/ConfirmReport';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleReportPress = () => {
+    setModalVisible(true);
+  };
+
+  const handleConfirm = () => {
+    setModalVisible(false);
+    navigation.navigate('Report');
+  };
+
+  const handleCancel = () => {
+    setModalVisible(false);
+  };
 
   const handleLogout = () => {
     dispatch(logout());
@@ -46,9 +61,13 @@ export default function HomeScreen() {
       <View style={tw`flex-row justify-around p-4`}>
         <Text style={tw`text-gray-700 text-center`}>Report missing persons here and help us bring them home by clicking the button below.</Text>
       </View>
-      <View style={tw`flex-row justify-around pt-15`}>
-        <TouchableOpacity style={[tw` p-6 px-20 rounded-full shadow-lg`, { backgroundColor: '#123f7b' }]} onPress={() => navigation.navigate('Report')}>
-          <Text style={tw`text-white text-center`}>Seek Now</Text>
+      <ConfirmReport />
+      <View >
+        <Text style={tw`text-center text-gray-700 pt-3`}>OR</Text>
+      </View>
+      <View style={tw`flex-row justify-around pt-3`}>
+        <TouchableOpacity style={[tw` p-6 px-16 rounded-full shadow-lg`, { backgroundColor: '#123f7b' }]} onPress={() => navigation.navigate('Report')}>
+          <Text style={tw`text-white text-center`}>Search for a person</Text>
         </TouchableOpacity>
       </View>
 

@@ -25,12 +25,6 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      [
-        "@react-native-google-signin/google-signin",
-        {
-          "iosUrlScheme": "com.googleusercontent.apps.830062945680-aamae289uf9ul6hs33dlsfqi7crvm2g5"
-        }
-      ]
     ],
     "extra": {
       "eas": {
