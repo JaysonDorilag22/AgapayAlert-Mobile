@@ -51,13 +51,17 @@ export const logout = () => async (dispatch) => {
 
 
 export const signup = (userData) => async (dispatch) => {
-  dispatch({ type: SIGNUP_REQUEST });
   try {
-    const { data } = await axios.post(
-      `${server}/auth/signup`,
-      userData,
-      axiosConfig
-    );
+  dispatch({ type: SIGNUP_REQUEST });
+
+  const config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  };
+
+    const { data } = await axios.post(`${server}/auth/signup`,userData,config);
+
     dispatch({ type: SIGNUP_SUCCESS, payload: data.message });
   } catch (error) {
     dispatch({ type: SIGNUP_FAIL, payload: error.response?.data?.message || error.message });

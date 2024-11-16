@@ -9,28 +9,35 @@ import {
   CLEAR_AUTH_STATE,
 } from "src/constants/actionTypes";
 
-export const editUserInfo = (userId, userData) => async (dispatch) => {
-  dispatch({ type: EDIT_USER_INFO_REQUEST });
+export const editUserInfo = (userId, formData) => async (dispatch) => {
   try {
-    const formData = new FormData();
-    for (const key in userData) {
-      formData.append(key, userData[key]);
-    }
-    const { data } = await axios.put(
-      `${server}/api/auth/editUserInfo/${userId}`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    dispatch({ type: EDIT_USER_INFO_SUCCESS, payload: data.user });
+    dispatch({ type: EDIT_USER_INFO_REQUEST });
+
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    const { data } = await axios.put(`${server}/users/${userId}`, formData, config);
+    console.log("Updated user data from backend:", data);
+
+    dispatch({
+      type: EDIT_USER_INFO_SUCCESS,
+      payload: data, // Ensure the updated user data is returned here
+    });
+
+    return { payload: data }; // Return the data to be used in the component
   } catch (error) {
-    dispatch({ type: EDIT_USER_INFO_FAIL, payload: error.response?.data?.message || error.message });
+    dispatch({
+      type: EDIT_USER_INFO_FAIL,
+      payload: error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message,
+    });
+    throw error; // Re-throw the error to be caught in the component
   }
 };
-
 export const getUserInfo = (userId) => async (dispatch) => {
   dispatch({ type: EDIT_USER_INFO_REQUEST });
   try {
