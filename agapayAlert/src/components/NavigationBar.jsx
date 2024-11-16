@@ -13,6 +13,10 @@ export default function NavbarWithSubmenu({ navigation }) {
     { name: "Alerts", route: "Notification", icon: "bell" },
   ];
 
+ 
+
+  
+
   return (
     <View style={tw`bg-gray-100 shadow-md pt-6`}>
         {/* Navbar Header */}
@@ -25,10 +29,14 @@ export default function NavbarWithSubmenu({ navigation }) {
             <View style={tw`flex-1`} />
             <View style={tw`flex-row items-center`}>
                 <Text style={tw`ml-2 text-gray-700 font-medium pr-4`}>Hi, Juan</Text>
+                <TouchableOpacity onPress={() => navigation.navigate("Profile")} >
+                  
                 <Image
                     source={require('../../assets/avatar.png')}
                     style={tw`w-10 h-10 rounded-full`}
                 />
+                </TouchableOpacity>
+
             </View>
         </View>
 

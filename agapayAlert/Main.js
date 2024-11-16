@@ -14,7 +14,7 @@ import AddressScreen from '@screens/auth/AddressScreen';
 import NavigationBar from '@components/NavigationBar';
 import VerifiedScreen from '@screens/auth/VerifiedScreen'
 import Toast from "react-native-toast-message";
-
+import ProfileScreen from '@screens/user/ProfileScreen';
 const Stack = createStackNavigator();
 
 export default function Main() {
@@ -34,6 +34,9 @@ export default function Main() {
         <Stack.Screen name="Notification" component={NotificationScreen} />
         <Stack.Screen name="verification" component={EmailVerificationScreen} />
         <Stack.Screen name="Address" component={AddressScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+
+
         {/* <Stack.Screen name="Sample" component={SampleScreen} /> */}
       </Stack.Navigator>
       {/* <NavigationBar/> */}

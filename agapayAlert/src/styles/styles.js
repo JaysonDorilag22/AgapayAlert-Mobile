@@ -10,6 +10,8 @@ const styles = {
   buttonPrimary: tw`bg-[#050C9C] text-white py-3 px-6  w-3/4 m-2 border border-[#8BACB8]`,
   buttonSecondary: tw`bg-[#F1FBFF] text-[#050C9C] py-3 px-6  w-3/4 m-2 border border-[#8BACB8]`,
   buttonContent: tw`flex-row items-center justify-center`, 
+  buttonDanger: tw`bg-[#B8001F] text-white py-3 px-6  w-3/4 m-2`,
+
   container: tw`flex-1 justify-center items-center bg-[#050C9C]`,
   text: tw`text-lg font-bold`,
   textWhite: tw`text-white font-semibold text-center`,
