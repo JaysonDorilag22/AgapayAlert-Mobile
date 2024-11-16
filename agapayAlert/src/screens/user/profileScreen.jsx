@@ -1,9 +1,9 @@
-import styles from "@styles/styles";
 import React, { useState } from "react";
-import { Text, View, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Text, View, TouchableOpacity, ActivityIndicator, Image } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserInfo } from "@redux/actions/userActions"; // Adjust the import path as needed
 import { logout } from "@redux/actions/authActions";
+import tw from 'twrnc';
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -33,29 +33,25 @@ export default function ProfileScreen({ navigation }) {
   console.log("Token:", localToken);
 
   return (
-    <View style={styles.form}>
-      <Text>Profile Screen</Text>
+    <View style={tw`flex-1 justify-center items-center p-5 bg-gray-100`}>
+      <Text style={tw`text-2xl font-bold mb-5`}>Profile Screen</Text>
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : localUser ? (
-        <View>
-          <Text>Name: {localUser.firstname} {localUser.lastname}</Text>
-          <Text>Email: {localUser.email}</Text>
-          <Text>Token: {localToken}</Text>
-          {/* Add more user details as needed */}
-          <TouchableOpacity style={styles.buttonDanger} onPress={handleLogout}>
-            <View style={styles.buttonContent}>
-              <Text style={styles.textWhite}>Logout</Text>
-            </View>
+        <View style={tw`w-full bg-white rounded-lg p-5 items-center shadow-lg`}>
+          <Image source={{ uri: localUser.avatar.url }} style={tw`w-24 h-24 rounded-full mb-5`} />
+          <Text style={tw`text-xl font-bold mb-2`}>{localUser.firstname} {localUser.lastname}</Text>
+          <Text style={tw`text-base text-gray-600 mb-2`}>{localUser.email}</Text>
+          <Text style={tw`text-sm text-gray-500 mb-5`}>Token: {localToken}</Text>
+          <TouchableOpacity style={tw`bg-red-500 p-3 rounded-lg`} onPress={handleLogout}>
+            <Text style={tw`text-white font-bold`}>Logout</Text>
           </TouchableOpacity>
         </View>
       ) : (
         <View>
-          <Text>No user information available.</Text>
-          <TouchableOpacity style={styles.buttonPrimary} onPress={fetchUserInfo}>
-            <View style={styles.buttonContent}>
-              <Text style={styles.textWhite}>Fetch User Info</Text>
-            </View>
+          <Text style={tw`text-base text-gray-600 mb-5`}>No user information available.</Text>
+          <TouchableOpacity style={tw`bg-blue-500 p-3 rounded-lg`} onPress={fetchUserInfo}>
+            <Text style={tw`text-white font-bold`}>Fetch User Info</Text>
           </TouchableOpacity>
         </View>
       )}
