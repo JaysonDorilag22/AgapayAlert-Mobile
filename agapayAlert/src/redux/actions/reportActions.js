@@ -1,4 +1,4 @@
- import { axiosConfig, server } from "@redux/store";
+import { axiosConfig, server } from "@redux/store";
 import axios from "axios";
 import {
   GET_REPORTS_REQUEST,
@@ -16,34 +16,47 @@ import {
   CLEAR_ERROR,
   CLEAR_REPORT_STATE,
 } from "src/constants/actionTypes";
-import { asyncHandler } from "@utils/asyncHandler";
 
-const getReportsAsync = async () => {
+export const getReports = () => async (dispatch) => {
+  dispatch({ type: GET_REPORTS_REQUEST });
+  try {
     const { data } = await axios.get(`${server}/reports/getall`, axiosConfig);
     console.log('Fetched Data:', data);
-    return data.data;
-    };
+    dispatch({ type: GET_REPORTS_SUCCESS, payload: data.data });
+  } catch (error) {
+    dispatch({ type: GET_REPORTS_FAIL, payload: error.message });
+  }
+};
 
-const addReportAsync = async (reportData) => {  
+export const addReport = (reportData) => async (dispatch) => {
+  dispatch({ type: CREATE_REPORT_REQUEST });
+  try {
     const { data } = await axios.post(`${server}/reports/create`, reportData, axiosConfig);
-    return data.report;
-    };
+    dispatch({ type: CREATE_REPORT_SUCCESS, payload: data.report });
+  } catch (error) {
+    dispatch({ type: CREATE_REPORT_FAIL, payload: error.message });
+  }
+};
 
-const updateReportAsync = async (reportData) => {
+export const updateReport = (reportData) => async (dispatch) => {
+  dispatch({ type: EDIT_REPORT_REQUEST });
+  try {
     const { data } = await axios.put(`${server}/reports/edit/${reportData._id}`, reportData, axiosConfig);
-    return data.report;
-    }
+    dispatch({ type: EDIT_REPORT_SUCCESS, payload: data.report });
+  } catch (error) {
+    dispatch({ type: EDIT_REPORT_FAIL, payload: error.message });
+  }
+};
 
-const deleteReportAsync = async (reportId) => {
+export const deleteReport = (reportId) => async (dispatch) => {
+  dispatch({ type: DELETE_REPORT_REQUEST });
+  try {
     await axios.delete(`${server}/reports/delete/${reportId}`, axiosConfig);
-    return reportId;
-    };
+    dispatch({ type: DELETE_REPORT_SUCCESS, payload: reportId });
+  } catch (error) {
+    dispatch({ type: DELETE_REPORT_FAIL, payload: error.message });
+  }
+};
 
-export const getReports = asyncHandler( getReportsAsync, GET_REPORTS_REQUEST, GET_REPORTS_SUCCESS, GET_REPORTS_FAIL );
-export const addReport = asyncHandler( addReportAsync, CREATE_REPORT_REQUEST, CREATE_REPORT_SUCCESS, CREATE_REPORT_FAIL );
-export const updateReport = asyncHandler( updateReportAsync, EDIT_REPORT_REQUEST, EDIT_REPORT_SUCCESS, EDIT_REPORT_FAIL );
-export const deleteReport = asyncHandler( deleteReportAsync, DELETE_REPORT_REQUEST, DELETE_REPORT_SUCCESS, DELETE_REPORT_FAIL );
 export const clearError = () => ({ type: CLEAR_ERROR });
 export const clearReportState = () => ({ type: CLEAR_REPORT_STATE });
-
-   
