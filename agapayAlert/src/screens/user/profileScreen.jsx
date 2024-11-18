@@ -1,21 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, TouchableOpacity, ActivityIndicator, Image, TextInput, Alert } from "react-native";
+import { Text, View, TouchableOpacity, ActivityIndicator, Image, Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserInfo, editUserInfo } from "@redux/actions/userActions";
 import { logout } from "@redux/actions/authActions";
 import tw from 'twrnc';
 import { pickImage } from "@utils/imageUpload";
+import styles from "@styles/styles";
+import EditProfileForm from "./EditProfileForm";
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
-  const { loading, user, token } = useSelector((state) => state.auth);
+  const { loading, user } = useSelector((state) => state.auth);
   const [localUser, setLocalUser] = useState(user);
-  const [localToken, setLocalToken] = useState(token);
   const [isEditing, setIsEditing] = useState(false);
   const [firstname, setFirstname] = useState(user?.firstname || '');
   const [lastname, setLastname] = useState(user?.lastname || '');
   const [avatar, setAvatar] = useState(user?.avatar?.url || '');
+  const [phoneNo, setPhoneNo] = useState(user?.phoneNo || '');
+  const [address, setAddress] = useState({
+    street: user?.address?.street || '',
+    city: user?.address?.city || '',
+    state: user?.address?.state || '',
+    zipCode: user?.address?.zipCode || '',
+    country: user?.address?.country || '',
+  });
+  const [preferredNotifications, setPreferredNotifications] = useState(user?.preferred_notifications || []);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAvatarLoading, setIsAvatarLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -23,6 +34,15 @@ export default function ProfileScreen({ navigation }) {
       setFirstname(user.firstname);
       setLastname(user.lastname);
       setAvatar(user.avatar.url);
+      setPhoneNo(user.phoneNo);
+      setAddress({
+        street: user.address.street,
+        city: user.address.city,
+        state: user.address.state,
+        zipCode: user.address.zipCode,
+        country: user.address.country,
+      });
+      setPreferredNotifications(user.preferred_notifications);
     }
   }, [user]);
 
@@ -35,7 +55,6 @@ export default function ProfileScreen({ navigation }) {
   const handleLogout = () => {
     dispatch(logout());
     setLocalUser(null);
-    setLocalToken(null);
     navigation.navigate("Welcome");
   };
 
@@ -44,11 +63,13 @@ export default function ProfileScreen({ navigation }) {
   };
 
   const handleChooseAvatar = async () => {
-    const result = await pickImage(setAvatar, setIsLoading);
+    setIsAvatarLoading(true);
+    const result = await pickImage(setAvatar, setIsAvatarLoading);
     if (result && !result.canceled) {
       setAvatar(result.uri);
       console.log("Selected avatar:", result.uri);
     }
+    setIsAvatarLoading(false);
   };
 
   const handleSaveProfile = async () => {
@@ -56,14 +77,28 @@ export default function ProfileScreen({ navigation }) {
     if (firstname !== localUser.firstname) changes.firstname = firstname;
     if (lastname !== localUser.lastname) changes.lastname = lastname;
     if (avatar !== localUser.avatar.url) changes.avatar = avatar;
-  
+    if (phoneNo !== localUser.phoneNo) changes.phoneNo = phoneNo;
+    if (address.street !== localUser.address.street) changes.street = address.street;
+    if (address.city !== localUser.address.city) changes.city = address.city;
+    if (address.state !== localUser.address.state) changes.state = address.state;
+    if (address.zipCode !== localUser.address.zipCode) changes.zipCode = address.zipCode;
+    if (address.country !== localUser.address.country) changes.country = address.country;
+    if (preferredNotifications !== localUser.preferred_notifications) changes.preferred_notifications = preferredNotifications;
+
     console.log("Changes before update:", changes);
-  
+
     setIsLoading(true);
     const formData = new FormData();
     if (changes.firstname) formData.append("firstname", changes.firstname);
     if (changes.lastname) formData.append("lastname", changes.lastname);
-  
+    if (changes.phoneNo) formData.append("phoneNo", changes.phoneNo);
+    if (changes.street) formData.append("address[street]", changes.street);
+    if (changes.city) formData.append("address[city]", changes.city);
+    if (changes.state) formData.append("address[state]", changes.state);
+    if (changes.zipCode) formData.append("address[zipCode]", changes.zipCode);
+    if (changes.country) formData.append("address[country]", changes.country);
+    if (changes.preferred_notifications) formData.append("preferred_notifications", JSON.stringify(changes.preferred_notifications));
+
     if (changes.avatar && changes.avatar.startsWith("file://")) {
       const fileName = changes.avatar.split('/').pop();
       formData.append("avatar", {
@@ -72,15 +107,15 @@ export default function ProfileScreen({ navigation }) {
         name: fileName,
       });
     }
-  
+
     try {
       const response = await dispatch(editUserInfo(user._id, formData));
       if (response && response.payload) {
-        const updatedUser = response.payload.user; // Access the user object from the payload
+        const updatedUser = response.payload.user; 
         console.log("Updated user:", updatedUser);
         if (updatedUser.avatar && updatedUser.avatar.url) {
           setLocalUser(updatedUser);
-          setAvatar(updatedUser.avatar.url); // Update the avatar URL in the state
+          setAvatar(updatedUser.avatar.url); 
         } else {
           console.error("Avatar URL is missing in the updated user data:", updatedUser);
           throw new Error("Avatar URL is missing in the updated user data");
@@ -92,19 +127,21 @@ export default function ProfileScreen({ navigation }) {
     } catch (error) {
       console.error("Failed to update profile:", error);
       Alert.alert("Error", "Failed to update profile. Please try again.");
-    } finally {
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
+
   return (
-    <View style={tw`flex-1 justify-center items-center p-5 bg-gray-100`}>
-      <Text style={tw`text-3xl font-bold mb-5 text-blue-600`}>Profile Screen</Text>
+    <View>
+      <Text style={styles.title}>Profile</Text>
       {loading || isLoading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : localUser ? (
-        <View style={tw`w-full bg-white rounded-lg p-5 items-center shadow-lg`}>
+        <View style={styles.form2}>
           <TouchableOpacity onPress={handleChooseAvatar}>
-            {avatar ? (
+            {isAvatarLoading ? (
+              <ActivityIndicator size="large" color="#0000ff" style={tw`w-24 h-24 rounded-full mb-5`} />
+            ) : avatar ? (
               <Image source={{ uri: avatar }} style={tw`w-24 h-24 rounded-full mb-5 border border-gray-300`} />
             ) : (
               <View style={tw`w-24 h-24 rounded-full mb-5 bg-gray-300 items-center justify-center`}>
@@ -114,37 +151,31 @@ export default function ProfileScreen({ navigation }) {
             <Text style={tw`text-blue-500`}>Change Avatar</Text>
           </TouchableOpacity>
           {isEditing ? (
-            <>
-              <TextInput
-                style={tw`text-xl font-bold mb-2 border-b border-gray-300 w-full p-2`}
-                value={firstname}
-                onChangeText={setFirstname}
-                placeholder="First Name"
-              />
-              <TextInput
-                style={tw`text-xl font-bold mb-2 border-b border-gray-300 w-full p-2`}
-                value={lastname}
-                onChangeText={setLastname}
-                placeholder="Last Name"
-              />
-              <Text style={tw`text-base text-gray-600 mb-2`}>{localUser.email}</Text>
-              <TouchableOpacity style={tw`bg-green-500 p-3 rounded-lg w-full mt-3`} onPress={handleSaveProfile}>
-                <Text style={tw`text-white font-bold text-center`}>Save</Text>
-              </TouchableOpacity>
-            </>
+            <EditProfileForm
+              firstname={firstname}
+              setFirstname={setFirstname}
+              lastname={lastname}
+              setLastname={setLastname}
+              phoneNo={phoneNo}
+              setPhoneNo={setPhoneNo}
+              address={address}
+              setAddress={setAddress}
+              preferredNotifications={preferredNotifications}
+              setPreferredNotifications={setPreferredNotifications}
+              handleSaveProfile={handleSaveProfile}
+            />
           ) : (
             <>
               <Text style={tw`text-xl font-bold mb-2`}>{localUser.firstname} {localUser.lastname}</Text>
               <Text style={tw`text-base text-gray-600 mb-2`}>{localUser.email}</Text>
-              <Text style={tw`text-sm text-gray-500 mb-5`}>Token: {localToken}</Text>
-              <TouchableOpacity style={tw`bg-blue-500 p-3 rounded-lg w-full mb-3`} onPress={handleEditProfile}>
-                <Text style={tw`text-white font-bold text-center`}>Edit Profile</Text>
+              <TouchableOpacity style={styles.buttonPrimary} onPress={handleEditProfile}>
+                <Text style={styles.textWhite}>Edit Profile</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={tw`bg-blue-500 p-3 rounded-lg w-full mb-3`} onPress={() => navigation.navigate("MyReports")}>
-                <Text style={tw`text-white font-bold text-center`}>My Reports</Text>
+              <TouchableOpacity style={styles.buttonPrimary} onPress={() => navigation.navigate("MyReports")}>
+                <Text style={styles.textWhite}>My Reports</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={tw`bg-red-500 p-3 rounded-lg w-full`} onPress={handleLogout}>
-                <Text style={tw`text-white font-bold text-center`}>Logout</Text>
+              <TouchableOpacity style={styles.buttonDanger} onPress={handleLogout}>
+                <Text style={styles.textWhite}>Logout</Text>
               </TouchableOpacity>
             </>
           )}
@@ -152,8 +183,8 @@ export default function ProfileScreen({ navigation }) {
       ) : (
         <View>
           <Text style={tw`text-base text-gray-600 mb-5`}>No user information available.</Text>
-          <TouchableOpacity style={tw`bg-blue-500 p-3 rounded-lg`} onPress={fetchUserInfo}>
-            <Text style={tw`text-white font-bold`}>Fetch User Info</Text>
+          <TouchableOpacity style={styles.buttonPrimary} onPress={fetchUserInfo}>
+            <Text style={styles.textWhite}>Fetch User Info</Text>
           </TouchableOpacity>
         </View>
       )}
