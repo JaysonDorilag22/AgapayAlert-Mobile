@@ -7,6 +7,8 @@ import SignUpScreen from '@screens/auth/SignUpScreen';
 import HomeScreen from '@screens/HomeScreen';
 import ReportScreen from '@screens/ReportScreen';
 import ReportDetailsScreen from '@screens/ReportDetailsScreen';
+import ReportAP from '@screens/Report/ReportAP';
+import ReportAP2 from '@screens/Report/ReportAP2';
 import CitiesScreen from '@screens/CitiesScreen';
 import NotificationScreen from '@screens/NotificationScreen';
 import EmailVerificationScreen from '@screens/auth/EmailVerificationScreen';
@@ -14,7 +16,7 @@ import AddressScreen from '@screens/auth/AddressScreen';
 import NavigationBar from '@components/NavigationBar';
 import VerifiedScreen from '@screens/auth/VerifiedScreen'
 import Toast from "react-native-toast-message";
-import ProfileScreen from '@screens/user/ProfileScreen';
+import ProfileScreen from '@screens/user/profileScreen';
 const Stack = createStackNavigator();
 
 export default function Main() {
@@ -35,6 +37,8 @@ export default function Main() {
         <Stack.Screen name="verification" component={EmailVerificationScreen} />
         <Stack.Screen name="Address" component={AddressScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="ReportAP" component={ReportAP} />
+        <Stack.Screen name="ReportAP2" component={ReportAP2} />
 
 
         {/* <Stack.Screen name="Sample" component={SampleScreen} /> */}
