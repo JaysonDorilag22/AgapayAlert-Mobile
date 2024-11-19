@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Image, TextInput } from "react-native";
+import { View, Text, TouchableOpacity, Image, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import ProgressBar from "@components/ProgressBar";
 import tw from "twrnc";
 
 export default function ReportAP() {
@@ -22,16 +23,18 @@ export default function ReportAP() {
   const filteredItems = items.filter(item => item.label.toLowerCase().includes(query.toLowerCase()));
 
   return (
-    <View style={tw`flex-1 pt-10`}>
+    <View style={tw`flex-1`}>
+      <ProgressBar step={1} totalSteps={5} />
+      <KeyboardAvoidingView behavior={Platform.OS === 'android' ? 'padding' : 'height'} style={tw`flex-1`}>
       <View>
-      <View style={tw`flex-row p-4 px-4`}>
-        <Text style={tw`text-xl font-bold`}>STEP 1</Text>
-      </View>
+        <View>
+          <Text style={tw`font-bold text-26px mb-1 text-center`}>Reportee's Information</Text>
+        </View>
       <View style={tw`flex-row px-4`}>
-        <Text style={tw`text-sm ml-4`}>Check if the details below are correct before proceeding.</Text>
+        <Text style={tw`text-sm ml-4 text-center`}>Check if the details below are correct before proceeding.</Text>
       </View>
       <View style={tw`items-center mb-2 pt-4`}>
-        <Image source={require('../../../assets/AGAPAYALERT.png')} style={tw`w-30 h-30 rounded-full`} resizeMode="contain" />
+        <Image source={require('../../../assets/AGAPAYALERT.png')} style={tw`w-20 h-20 rounded-full`} resizeMode="contain" />
       </View>
       <View style={tw`justify-start p-4`}>
         <Text style={tw`text-base font-bold mb-3 mb-1`}>Name</Text>
@@ -50,6 +53,7 @@ export default function ReportAP() {
         </View>
       </View>
     </View>
+    </KeyboardAvoidingView>
     </View>
   );
 }
