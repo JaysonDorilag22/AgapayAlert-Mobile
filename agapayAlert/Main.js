@@ -13,10 +13,10 @@ import CitiesScreen from '@screens/CitiesScreen';
 import NotificationScreen from '@screens/NotificationScreen';
 import EmailVerificationScreen from '@screens/auth/EmailVerificationScreen';
 import AddressScreen from '@screens/auth/AddressScreen';
-import NavigationBar from '@components/NavigationBar';
 import VerifiedScreen from '@screens/auth/VerifiedScreen'
 import Toast from "react-native-toast-message";
 import ProfileScreen from '@screens/user/profileScreen';
+import PrivateRoute from '@components/PrivateRoute';
 const Stack = createStackNavigator();
 
 export default function Main() {
@@ -39,7 +39,7 @@ export default function Main() {
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="ReportAP" component={ReportAP} />
         <Stack.Screen name="ReportAP2" component={ReportAP2} />
-
+        {/* <Stack.Screen name="AdminScreen" component={(props) => <PrivateRoute {...props} component={AdminScreen} roles={['admin']} />} /> */}
 
         {/* <Stack.Screen name="Sample" component={SampleScreen} /> */}
       </Stack.Navigator>

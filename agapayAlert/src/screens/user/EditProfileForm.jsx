@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TextInput, Button, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import tw from 'twrnc';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const EditProfileForm = ({
   firstname,
@@ -24,6 +25,12 @@ const EditProfileForm = ({
       Alert.alert("Error", "You can select a maximum of two preferred notifications.");
     }
   };
+
+  const notifications = [
+    { type: 'sms', icon: 'comment', description: 'Receive SMS notifications' },
+    { type: 'push', icon: 'bell', description: 'Receive push notifications' },
+    { type: 'email', icon: 'envelope', description: 'Receive email notifications' }
+  ];
 
   return (
     <ScrollView contentContainerStyle={tw`p-2 pb-40`}>
@@ -101,14 +108,20 @@ const EditProfileForm = ({
       </View>
       <View style={tw`mb-2`}>
         <Text style={tw`mb-1`}>Preferred Notifications:</Text>
-        {['sms', 'push', 'email'].map(notification => (
+        {notifications.map(notification => (
           <TouchableOpacity
-            key={notification}
-            onPress={() => handleNotificationChange(notification)}
+            key={notification.type}
+            onPress={() => handleNotificationChange(notification.type)}
             style={tw`flex-row items-center mb-1`}
           >
-            <View style={tw`w-4 h-4 mr-2 ${preferredNotifications.includes(notification) ? 'bg-blue-500' : 'bg-gray-300'}`} />
-            <Text>{notification}</Text>
+            <Icon
+              name={notification.icon}
+              size={20}
+              color={preferredNotifications.includes(notification.type) ? 'blue' : 'gray'}
+              style={tw`mr-2`}
+            />
+            <Text>{notification.type}</Text>
+            <Text style={tw`ml-2 text-gray-500`}>{notification.description}</Text>
           </TouchableOpacity>
         ))}
       </View>
