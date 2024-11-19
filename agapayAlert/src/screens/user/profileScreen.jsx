@@ -102,9 +102,9 @@ export default function ProfileScreen({ navigation }) {
     if (address.zipCode !== localUser.address.zipCode) changes.zipCode = address.zipCode;
     if (address.country !== localUser.address.country) changes.country = address.country;
     if (preferredNotifications !== localUser.preferred_notifications) changes.preferred_notifications = preferredNotifications;
-
+  
     console.log("Changes before update:", changes);
-
+  
     setIsLoading(true);
     const formData = new FormData();
     if (changes.firstname) formData.append("firstname", changes.firstname);
@@ -115,8 +115,13 @@ export default function ProfileScreen({ navigation }) {
     if (changes.state) formData.append("address[state]", changes.state);
     if (changes.zipCode) formData.append("address[zipCode]", changes.zipCode);
     if (changes.country) formData.append("address[country]", changes.country);
-    if (changes.preferred_notifications) formData.append("preferred_notifications", JSON.stringify(changes.preferred_notifications));
-
+  
+    if (changes.preferred_notifications) {
+      changes.preferred_notifications.forEach((notification, index) => {
+        formData.append(`preferred_notifications[${index}]`, notification);
+      });
+    }
+  
     if (changes.avatar && changes.avatar.startsWith("file://")) {
       const fileName = changes.avatar.split('/').pop();
       formData.append("avatar", {
@@ -125,7 +130,7 @@ export default function ProfileScreen({ navigation }) {
         name: fileName,
       });
     }
-
+  
     try {
       const response = await dispatch(editUserInfo(user._id, formData));
       if (response && response.payload) {
