@@ -50,23 +50,23 @@ export const logout = () => async (dispatch) => {
 
 
 
-export const signup = (userData) => async (dispatch) => {
-  try {
+export const signup = (formData) => async (dispatch) => {
   dispatch({ type: SIGNUP_REQUEST });
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
 
-  const config = {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  };
-
-    const { data } = await axios.post(`${server}/auth/signup`,userData,config);
-
-    dispatch({ type: SIGNUP_SUCCESS, payload: data.message });
+    const { data } = await axios.post(`${server}/auth/signup`, formData, config);
+    dispatch({ type: SIGNUP_SUCCESS, payload: data.data });
   } catch (error) {
-    dispatch({ type: SIGNUP_FAIL, payload: error.response?.data?.message || error.message });
+    const errorMessage = error.response?.data?.message || error.message;
+    dispatch({ type: SIGNUP_FAIL, payload: errorMessage });
   }
 };
+
 
 export const verifyEmail = (email, code) => async (dispatch) => {
   dispatch({ type: VERIFY_EMAIL_REQUEST });
