@@ -33,7 +33,7 @@ export default function SignUpStep3({
       try {
         const hasPermission = await requestMediaLibraryPermissions();
         if (!hasPermission) {
-         showToast("error", "Permission denied");
+          showToast("error", "Permission denied");
         }
       } catch (error) {
         console.error("Permission error: ", error);

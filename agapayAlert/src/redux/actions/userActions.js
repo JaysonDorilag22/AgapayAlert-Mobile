@@ -4,36 +4,50 @@ import {
   EDIT_USER_INFO_REQUEST,
   EDIT_USER_INFO_SUCCESS,
   EDIT_USER_INFO_FAIL,
-  LOGOUT_REQUEST,
-  LOGOUT_SUCCESS,
-  LOGOUT_FAIL,
+
   CLEAR_ERROR,
   CLEAR_AUTH_STATE,
 } from "src/constants/actionTypes";
-import { asyncHandler } from "@utils/asyncHandler";
 
-const editUserInfoAsync = async (userId, userData) => {
-  const formData = new FormData();
-  for (const key in userData) {
-    formData.append(key, userData[key]);
-  }
-  const { data } = await axios.put(
-    `${server}/api/auth/editUserInfo/${userId}`,
-    formData,
-    {
+export const editUserInfo = (userId, formData) => async (dispatch) => {
+  try {
+    dispatch({ type: EDIT_USER_INFO_REQUEST });
+
+    const config = {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-    }
-  );
-  return data.user;
+    };
+
+    const { data } = await axios.put(`${server}/users/${userId}`, formData, config);
+    console.log("Updated user data from backend:", data);
+
+    dispatch({
+      type: EDIT_USER_INFO_SUCCESS,
+      payload: data, // Ensure the updated user data is returned here
+    });
+
+    return { payload: data }; // Return the data to be used in the component
+  } catch (error) {
+    dispatch({
+      type: EDIT_USER_INFO_FAIL,
+      payload: error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message,
+    });
+    throw error; // Re-throw the error to be caught in the component
+  }
+};
+export const getUserInfo = (userId) => async (dispatch) => {
+  dispatch({ type: EDIT_USER_INFO_REQUEST });
+  try {
+    const { data } = await axios.get(`${server}/api/auth/${userId}`, axiosConfig);
+    dispatch({ type: EDIT_USER_INFO_SUCCESS, payload: data.user });
+  } catch (error) {
+    dispatch({ type: EDIT_USER_INFO_FAIL, payload: error.response?.data?.message || error.message });
+  }
 };
 
-const logoutAsync = async () => {
-  await axios.post(`${server}/auth/logout`, {}, axiosConfig);
-};
 
-export const editUserInfo = asyncHandler( editUserInfoAsync, EDIT_USER_INFO_REQUEST, EDIT_USER_INFO_SUCCESS, EDIT_USER_INFO_FAIL );
-export const logout = asyncHandler( logoutAsync, LOGOUT_REQUEST, LOGOUT_SUCCESS, LOGOUT_FAIL );
 export const clearError = () => ({ type: CLEAR_ERROR });
 export const clearAuthState = () => ({ type: CLEAR_AUTH_STATE });

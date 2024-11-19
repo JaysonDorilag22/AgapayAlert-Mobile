@@ -18,10 +18,18 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon1.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.jaysonarticonadorilag.agapayAlert"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "30a4be0a-5404-4be7-8803-3463bd725f19"
+      }
     }
   }
 }
