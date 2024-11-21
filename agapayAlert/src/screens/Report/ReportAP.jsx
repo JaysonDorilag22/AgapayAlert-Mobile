@@ -44,11 +44,11 @@ export default function ReportAP() {
         <Text style={tw`text-base font-bold mt-3 mb-1`}>Contact Number</Text>
         <TextInput style={tw`bg-white border p-2 rounded-md shadow-md`} value="0909095656879" readOnly />
         <View style={tw`flex-row pt-4 gap-4`}>
-        <TouchableOpacity style={[tw`py-3 px-10 rounded-full mt-4`, {backgroundColor: '#b91c1c' }]}  onPress={() => navigation.navigate("Home")}>
-            <Text style={tw`text-white text-center`}>Edit Profile</Text>
+        <TouchableOpacity style={[tw`py-3 px-10 rounded-full mt-4 border`, {backgroundColor: 'white', borderColor: '#123f7b'  }]}  onPress={() => navigation.navigate("Home")}>
+            <Text style={tw`text-black text-center`}>Edit Profile</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[tw`py-3 px-13 rounded-full mt-4`, {backgroundColor: '#123f7b' }]}  onPress={() => navigation.navigate("ReportAP2")}>
-            <Text style={tw`text-white text-center`}>Proceed</Text>
+        <TouchableOpacity style={[tw`py-3 px-13 rounded-full mt-4 border`, {backgroundColor: '#DAF5FF', borderColor: '#050C9C' }]}  onPress={() => navigation.navigate("ReportAP2")}>
+            <Text style={tw`text-[#050C9C] text-center`}>Proceed</Text>
         </TouchableOpacity>
         </View>
       </View>

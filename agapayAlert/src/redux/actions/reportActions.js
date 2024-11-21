@@ -22,7 +22,7 @@ export const getReports = () => async (dispatch) => {
   try {
     const { data } = await axios.get(`${server}/reports/getall`, axiosConfig);
     console.log('Fetched Data:', data);
-    dispatch({ type: GET_REPORTS_SUCCESS, payload: data.data });
+    dispatch({ type: GET_REPORTS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({ type: GET_REPORTS_FAIL, payload: error.message });
   }

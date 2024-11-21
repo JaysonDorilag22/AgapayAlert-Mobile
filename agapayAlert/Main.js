@@ -10,6 +10,8 @@ import ReportDetailsScreen from '@screens/ReportDetailsScreen';
 import ReportAP from '@screens/Report/ReportAP';
 import ReportAP2 from '@screens/Report/ReportAP2';
 import ReportAP3 from '@screens/Report/ReportAP3';
+import ReportAP4 from '@screens/Report/ReportAP4';
+import ReportAP5 from '@screens/Report/ReportAP5';
 import CitiesScreen from '@screens/CitiesScreen';
 import NotificationScreen from '@screens/NotificationScreen';
 import EmailVerificationScreen from '@screens/auth/EmailVerificationScreen';
@@ -41,6 +43,8 @@ export default function Main() {
         <Stack.Screen name="ReportAP" component={ReportAP} />
         <Stack.Screen name="ReportAP2" component={ReportAP2} />
         <Stack.Screen name="ReportAP3" component={ReportAP3} />
+        <Stack.Screen name="ReportAP4" component={ReportAP4} />
+        <Stack.Screen name="ReportAP5" component={ReportAP5} />
         {/* <Stack.Screen name="AdminScreen" component={(props) => <PrivateRoute {...props} component={AdminScreen} roles={['admin']} />} /> */}
         
 

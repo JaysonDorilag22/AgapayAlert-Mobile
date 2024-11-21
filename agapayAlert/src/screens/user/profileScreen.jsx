@@ -155,7 +155,7 @@ export default function ProfileScreen({ navigation }) {
   };
 
   return (
-    <View style={tw`flex-1 bg-gray-100 p-5 items-center`}>
+    <View style={tw`flex-1 bg-gray-100 p-5 mt-5 items-center`}>
       <Text style={tw`text-3xl font-bold mb-5`}>Profile</Text>
       {loading || isLoading ? (
         <ActivityIndicator size="large" color="#007BFF" />

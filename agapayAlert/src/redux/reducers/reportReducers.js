@@ -28,7 +28,7 @@ export const reportReducer = createReducer(initialState, (builder) => {
       state.loading = true;
     })
     .addCase(GET_REPORTS_SUCCESS, (state, action) => {
-      console.log('Reports:', action.payload);
+      console.log('Reports Fetched:', action.payload); // Log the payload
       state.loading = false;
       state.reports = action.payload;
     })

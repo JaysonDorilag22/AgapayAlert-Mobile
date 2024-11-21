@@ -142,8 +142,8 @@ export default function ReportAP2() {
               <TouchableOpacity style={[tw`py-3 px-15 rounded-full mt-4 border`, {backgroundColor: 'white', borderColor: '#123f7b' }]}  onPress={() => navigation.navigate("ReportAP")}>
                   <Text style={tw`text-black text-center`}>Back</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[tw`py-3 px-13 rounded-full mt-4`, {backgroundColor: '#123f7b' }]}  onPress={() => navigation.navigate("ReportAP3")}>
-                  <Text style={tw`text-white text-center`}>Proceed</Text>
+              <TouchableOpacity style={[tw`py-3 px-13 rounded-full mt-4 border`, {backgroundColor: '#DAF5FF', borderColor: '#050C9C' }]}  onPress={() => navigation.navigate("ReportAP3")}>
+              <Text style={tw`text-[#050C9C] text-center`}>Proceed</Text>
               </TouchableOpacity>
               </View>
             </View>
