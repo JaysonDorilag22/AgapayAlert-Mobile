@@ -14,6 +14,9 @@ import {
   DELETE_REPORT_FAIL,
   CLEAR_ERROR,
   CLEAR_REPORT_STATE,
+  CREATE_POST_REQUEST,
+  CREATE_POST_SUCCESS,
+  CREATE_POST_FAIL,
 } from "src/constants/actionTypes";
 
 const initialState = {
@@ -72,9 +75,27 @@ export const reportReducer = createReducer(initialState, (builder) => {
       state.loading = false;
       state.error = action.payload;
     })
+    .addCase(CREATE_POST_REQUEST, (state) => {
+      state.loading = true;
+    })
+    .addCase(CREATE_POST_SUCCESS, (state, action) => {
+      state.loading = false;
+      state.reports = state.reports.map((report) =>
+        report._id === action.payload._id ? action.payload : report
+      );
+    })
+    .addCase(CREATE_POST_FAIL, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
     .addCase(CLEAR_ERROR, (state) => {
       state.error = null;
     })
+    .addCase(CLEAR_REPORT_STATE, (state) => {
+      state.reports = [];
+      state.loading = false;
+      state.error = null;
+    });
 });
 
 export default reportReducer;
