@@ -14,7 +14,7 @@ export default function ConfirmReport() {
 
     const handleConfirm = () => {
         setModalVisible(false);
-        navigation.navigate("ReportAP");
+        navigation.navigate("ReportAPScreen");
     };
 
     const handleCancel = () => {

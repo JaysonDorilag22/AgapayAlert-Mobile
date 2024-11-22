@@ -41,13 +41,16 @@ export const reportReducer = createReducer(initialState, (builder) => {
       state.error = action.payload;
     })
     .addCase(CREATE_REPORT_REQUEST, (state) => {
+      console.log('Creating Report...');
       state.loading = true;
     })
     .addCase(CREATE_REPORT_SUCCESS, (state, action) => {
       state.loading = false;
       state.reports.push(action.payload);
+      console.log('Report Created:', action.payload); // Log the payload
     })
     .addCase(CREATE_REPORT_FAIL, (state, action) => {
+      console.log('Report Creation Failed:', action.payload);
       state.loading = false;
       state.error = action.payload;
     })

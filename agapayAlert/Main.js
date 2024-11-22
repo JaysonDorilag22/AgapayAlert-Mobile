@@ -1,24 +1,21 @@
-import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import WelcomeScreen from "@screens/WelcomeScreen";
-import LoginScreen from "@screens/auth/LoginScreen";
-import SignUpScreen from "@screens/auth/SignUpScreen";
-import HomeScreen from "@screens/HomeScreen";
-import ReportScreen from "@screens/ReportScreen";
-import ReportDetailsScreen from "@screens/ReportDetailsScreen";
-import ReportAP from "@screens/Report/ReportAP";
-import ReportAP2 from "@screens/Report/ReportAP2";
-import ReportAP3 from "@screens/Report/ReportAP3";
-import ReportAP4 from "@screens/Report/ReportAP4";
-import ReportAP5 from "@screens/Report/ReportAP5";
-import CitiesScreen from "@screens/CitiesScreen";
-import NotificationScreen from "@screens/NotificationScreen";
-import EmailVerificationScreen from "@screens/auth/EmailVerificationScreen";
-import AddressScreen from "@screens/auth/AddressScreen";
-import VerifiedScreen from "@screens/auth/VerifiedScreen";
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import WelcomeScreen from '@screens/WelcomeScreen';
+import LoginScreen from '@screens/auth/LoginScreen';
+import SignUpScreen from '@screens/auth/SignUpScreen';
+import HomeScreen from '@screens/HomeScreen';
+import ReportScreen from '@screens/ReportScreen';
+import ReportDetailsScreen from '@screens/ReportDetailsScreen';
+import ReportAPScreen from '@screens/Report/ReportAPScreen';
+import CitiesScreen from '@screens/CitiesScreen';
+import NotificationScreen from '@screens/NotificationScreen';
+import EmailVerificationScreen from '@screens/auth/EmailVerificationScreen';
+import AddressScreen from '@screens/auth/AddressScreen';
+import VerifiedScreen from '@screens/auth/VerifiedScreen'
 import Toast from "react-native-toast-message";
 import ProfileScreen from "@screens/user/profileScreen";
+import EditProfileForm from '@screens/user/EditProfileForm';
 import PrivateRoute from "@components/PrivateRoute";
 import AdminDashboardScreen from "@screens/admin/AdminDashboardScreen";
 import AdminNotificationScreen from "@screens/admin/adminNotification/AdminNotificationScreen";
@@ -46,11 +43,8 @@ export default function Main() {
         <Stack.Screen name="verification" component={EmailVerificationScreen} />
         <Stack.Screen name="Address" component={AddressScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
-        <Stack.Screen name="ReportAP" component={ReportAP} />
-        <Stack.Screen name="ReportAP2" component={ReportAP2} />
-        <Stack.Screen name="ReportAP3" component={ReportAP3} />
-        <Stack.Screen name="ReportAP4" component={ReportAP4} />
-        <Stack.Screen name="ReportAP5" component={ReportAP5} />
+        <Stack.Screen name="EditProfile" component={EditProfileForm} />
+        <Stack.Screen name="ReportAPScreen" component={ReportAPScreen} />
         <Stack.Screen name="AdminDashboardScreen">
           {(props) => (
             <PrivateRoute component={AdminDashboardScreen} {...props} />

@@ -1,54 +1,59 @@
-import React, {useState} from "react";
-import { View, Text, TouchableOpacity, ScrollView, TextInput, FlatList, Platform, KeyboardAvoidingView } from "react-native";
-import { RadioButton } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
-import ProgressBar from "@components/ProgressBar";
-import tw from "twrnc";
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, Image, TextInput, Platform, KeyboardAvoidingView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import RNPickerSelect from 'react-native-picker-select';
+import { pickImage } from '@utils/imageUpload';
+import avatar from '@assets/avatar.png';
+import tw from 'twrnc';
+import ProgressBar from '@components/ProgressBar';
+import styles from '@styles/styles';
 
-export default function ReportAP3() {
+export default function ReportAP3({ nextStep, prevStep, formData, setFieldValue, errors, touched, handleChange, handleBlur }) {
     const navigation = useNavigation();
-    const [hairColor, setHairColor] = useState('natural');
-    const [hairColorInput, setHairColorInput] = useState('');
-    const [hairSuggestions, setHairSuggestions] = useState([]);
-    const [eyeColor, setEyeColor] = useState('natural');
-    const [eyeColorInput, setEyeColorInput] = useState('');
-    const [eyeSuggestions, setEyeSuggestions] = useState([]);
-    const hairColors = ['Black', 'Brown', 'Blonde', 'Red', 'Gray', 'White', 'Blue', 'Green', 'Pink', 'Purple', 'Orange'];
-    const eyeColors = ['Black', 'Brown', 'Blue', 'Green', 'Gray', 'Hazel', 'Amber'];
-
-    const handleHairColorChange = (text) => {
-        setHairColorInput(text);
-        if (text.length > 0) {
-        const filteredSuggestions = hairColors.filter(color => color.toLowerCase().startsWith(text.toLowerCase()));
-        setHairSuggestions(filteredSuggestions);
-        } else {
-        setHairSuggestions([]);
-        }
-    };
-
-    const handleHairSuggestionPress = (color) => {
-        setHairColorInput(color);
-        setHairSuggestions([]);
-    };
-
-    const handleEyeColorChange = (text) => {
-        setEyeColorInput(text);
-        if (text.length > 0) {
-        const filteredSuggestions = eyeColors.filter(color => color.toLowerCase().startsWith(text.toLowerCase()));
-        setEyeSuggestions(filteredSuggestions);
-        } else {
-        setEyeSuggestions([]);
-        }
-    };
-
-    const handleEyeSuggestionPress = (color) => {
-        setEyeColorInput(color);
-        setEyeSuggestions([]);
-    };
+    const [date, setDate] = useState(new Date());
+    const [show, setShow] = useState(false);
+    const [images, setImages] = useState(formData.missingPerson.images || []);
+    const [isLoading, setIsLoading] = useState(false);
     
+    const relationshipOptions = [
+    { label: 'Parent', value: 'Parent' },
+    { label: 'Sibling', value: 'Sibling' },
+    { label: 'Relative', value: 'Relative' },
+    { label: 'Spouse', value: 'Spouse' },
+    { label: 'Child', value: 'Child' },
+    { label: 'Friend', value: 'Friend' },
+    { label: 'Colleague', value: 'Colleague' },
+    { label: 'Others', value: 'Others' },
+  ];
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
+    setFieldValue('missingPerson.lastSeen', currentDate);
+  };
+    
+      const showDatepicker = () => {
+        setShow(true);
+      };
+
+      const handlePickImage = async () => {
+        await pickImage((uri) => {
+          if (uri) {
+            // Simulate generating a public_id for the image
+            const public_id = `image_${Date.now()}`;
+            const newImage = { public_id, url: uri };
+            const updatedImages = [...images, newImage];
+            setImages(updatedImages);
+            setFieldValue('missingPerson.images', updatedImages);
+          }
+        }, setIsLoading);
+      };
+    
+
     return (
         <View style={tw`flex-1`}>
-            <ProgressBar step={3} totalSteps={5} />
             <KeyboardAvoidingView behavior={Platform.OS === 'android' ? 'padding' : 'height'} style={tw`flex-1`}>
                 <View>
                     <Text style={tw`font-bold text-22px mb-1 text-center`}>Absent Person's Information</Text>
@@ -58,101 +63,75 @@ export default function ReportAP3() {
                 </View>
                 <ScrollView>
                     <View style={tw`justify-start p-4`}>
-                        <Text style={tw`text-base font-bold mt-3 mb-1`}>Race / Nationality</Text>
-                        <TextInput style={tw`bg-white border p-2 rounded-md shadow-md`} placeholder='Type here...' />
-                        <View style={tw`flex-row flex-nowrap`}>
-                            <Text style={tw`text-base font-bold mt-3 mb-1 mr-4`}>Current Hair Color</Text>
+                        <Text style={tw`text-base font-bold mt-3 mb-1`}>Most Recent Picture</Text>
+                        <View style={tw`flex-row items-center justify-center my-2 mx-30 rounded-full border-2`}>
+                        {images.length > 0 ? (
+                            images.filter(image => image.url).map((image, index) => (
+                            <Image key={index} source={{ uri: image.url }} style={tw`w-21 h-21 rounded-full`} />
+                            ))
+                        ) : (
+                            <Image source={require('@assets/avatar.png')} style={tw`w-20 h-20`} />
+                        )}
                         </View>
-                        <View style={tw`flex-row flex-nowrap`}>
-                                <View style={tw`flex-nowrap`}>
-                                    <TextInput
-                                    style={tw`bg-white border p-2 pr-15 rounded-md shadow-md`}
-                                    placeholder='Type here...'
-                                    value={hairColorInput}
-                                    onChangeText={handleHairColorChange}
-                                    />
-                                    {/* {hairSuggestions.length > 0 && (
-                                    <View style={tw`babsolute container max-h-20 overflow-scroll`}>
-                                        {hairSuggestions.map((item) => (
-                                        <View style={tw`flex-row opacity-25 pr-6 bg-white pt-0.25 mt-1`}>
-                                            <TouchableOpacity key={item} onPress={() => handleHairSuggestionPress(item)} style={tw`p-2 `}>
-                                                <Text>{item}</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                        ))}
-                                    </View>
-                                    )} */}
-                                </View>
-                            <View style={tw`flex-row mt-1 mx-2`}>
-                                <RadioButton
-                                color="#050C9C"
-                                value="natural"
-                                status={hairColor === 'natural' ? 'checked' : 'unchecked'}
-                                onPress={() => setHairColor('natural')}
-                                />
-                                <Text style={tw`mt-2 mr-2`}>Natural</Text>
-                                <RadioButton
-                                color="#050C9C"
-                                value="dyed"
-                                status={hairColor === 'dyed' ? 'checked' : 'unchecked'}
-                                onPress={() => setHairColor('dyed')}
-                                />
-                                <Text style={tw`mt-2`}>Dyed</Text>
-                            </View>
+                        <TouchableOpacity onPress={handlePickImage} style={tw`bg-blue-500 p-2 rounded-md shadow-md`}>
+                        <Text style={tw`text-white text-center`}>Pick an Image</Text>
+                        </TouchableOpacity>
+                        {touched.missingPerson?.images && errors.missingPerson?.images && <Text style={styles.errorText}>{errors.missingPerson.images}</Text>}
+                        <Text style={tw`text-base font-bold mt-3 mb-1`}>Relationship</Text>
+                        <View style={tw`border rounded-md shadow-md`}>
+                        <RNPickerSelect
+                            onValueChange={(value) => {
+                                setFieldValue('reporter.relationship', value);
+                            }}
+                            items={relationshipOptions}
+                            placeholder={{ label: "Select relationship", value: null }}
+                            style={{
+                                viewContainer: tw`bg-white p-1 rounded-md`,
+                                inputAndroid: tw`bg-white rounded-md`,
+                                placeholder: { color: 'gray' },
+                            }}
+                            />
                         </View>
-                        <View style={tw`flex-row flex-nowrap`}>
-                            <Text style={tw`text-base font-bold mt-3 mb-1 mr-4`}>Eye Color</Text>
-                        </View>
-                        <View style={tw`flex-row flex-nowrap`}>
-                                <View style={tw`flex-nowrap`}>
-                                    <TextInput
-                                    style={tw`bg-white border p-2 pr-15 rounded-md shadow-md`}
-                                    placeholder='Type here...'
-                                    value={eyeColorInput}
-                                    onChangeText={handleEyeColorChange}
-                                    />
-                                    {/* {eyeSuggestions.length > 0 && (
-                                    <View style={tw`absolute container max-h-20 overflow-scroll`}>
-                                    <FlatList
-                                        data={eyeSuggestions}
-                                        keyExtractor={(item) => item}
-                                        renderItem={({ item }) => (
-                                        <TouchableOpacity onPress={() => handleEyeSuggestionPress(item)} style={tw`p-2 `}>
-                                            <Text>{item}</Text>
-                                        </TouchableOpacity>
-                                        )}
-                                        style={tw`flex-row opacity-25 pr-6 bg-white pt-0.25 mt-1`}
-                                    />
-                                    </View>
-                                     )} */}
-                                </View>
-                            <View style={tw`flex-row mt-1 mx-2`}>
-                                <RadioButton
-                                color="#050C9C"
-                                status={eyeColor === 'natural' ? 'checked' : 'unchecked'}
-                                onPress={() => setEyeColor('natural')}
-                                />
-                                <Text style={tw`mt-2 mr-2`}>Natural</Text>
-                                <RadioButton
-                                color="#050C9C"
-                                value="contacts"
-                                status={eyeColor === 'contacts' ? 'checked' : 'unchecked'}
-                                onPress={() => setEyeColor('contacts')}
-                                />
-                                <Text style={tw`text-xs mt-2.5`}>Contacts</Text>
-                            </View>
-                        </View>
-                        <Text style={tw`text-base font-bold mt-3 mb-1`}>Blood Type</Text>
-                        <TextInput style={tw`bg-white border p-2 rounded-md shadow-md`} placeholder='Type here...' />
-                        <Text style={tw`text-base font-bold mt-3 mb-1`}>Scars, Marks, and/or tattoo/es</Text>
-                        <TextInput style={tw`bg-white border p-2 rounded-md shadow-md`} placeholder='Type here...' />
-                        <Text style={tw`text-base font-bold mt-3 mb-1`}>Prosthetics and/or Implants</Text>
-                        <TextInput style={tw`bg-white border p-2 rounded-md shadow-md`} placeholder='Type here...' />
+                        {touched.relationship && errors.relationship && <Text style={styles.errorText}>{errors.relationship}</Text>}
+                        <Text style={tw`text-base font-bold mt-3 mb-1`}>Last Known Location</Text>
+                        <TextInput style={tw`bg-white border p-2 rounded-md shadow-md`} 
+                        placeholder='Type here...' 
+                        value={formData.missingPerson.lastKnownLocation}
+                        onChangeText={handleChange("missingPerson.lastKnownLocation")}
+                        onBlur={handleBlur("missingPerson.lastKnownLocation")}
+                        />
+                        {touched.missingPerson?.lastKnownLocation && errors.missingPerson?.lastKnownLocation && <Text style={styles.errorText}>{errors.missingPerson.lastKnownLocation}</Text>}
+                        <Text style={tw`text-base font-bold mt-3 mb-1`}>Date Last Seen</Text>
+                        <TouchableOpacity onPress={showDatepicker} style={tw`bg-white border p-3 rounded-md shadow-md pr-8 grow-0 shrink-0`}>
+                        <Text>{date.toDateString()}</Text>
+                        </TouchableOpacity>
+                        {show && (
+                        <DateTimePicker
+                            testID="dateTimePicker"
+                            value={date}
+                            mode="date"
+                            display="default"
+                            maximumDate={new Date()}
+                            onChange={onChange}
+                        />
+                        )}
+                        {touched.missingPerson?.lastSeen && errors.missingPerson?.lastSeen && <Text style={styles.errorText}>{errors.missingPerson.lastSeen}</Text>}
+                        <Text style={tw`text-base font-bold mt-3 mb-1`}>Cause of Disappearance</Text>
+                        <TextInput
+                            style={tw`bg-white border p-2 rounded-md shadow-md`}
+                            placeholder='Type here...'
+                            multiline={true}
+                            numberOfLines={6}
+                            textAlignVertical="top"
+                            value={formData.missingPerson.causeOfDisappearance}
+                            onChangeText={handleChange("missingPerson.causeOfDisappearance")}
+                            onBlur={handleBlur("missingPerson.causeOfDisappearance")}
+                        />
                         <View style={tw`flex-row pt-4 gap-4`}>
-                            <TouchableOpacity style={[tw`py-3 px-15 rounded-full mt-4 border`, {backgroundColor: 'white', borderColor: '#123f7b' }]}  onPress={() => navigation.navigate("ReportAP2")}>
+                            <TouchableOpacity style={[tw`py-3 px-15 rounded-full mt-4 border`, {backgroundColor: 'white', borderColor: '#123f7b' }]}  onPress={prevStep}>
                                 <Text style={tw`text-black text-center`}>Back</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[tw`py-3 px-13 rounded-full mt-4 border`, {backgroundColor: '#DAF5FF', borderColor: '#050C9C' }]}  onPress={() => navigation.navigate("ReportAP4")}>
+                            <TouchableOpacity style={[tw`py-3 px-13 rounded-full mt-4 border`, {backgroundColor: '#DAF5FF', borderColor: '#050C9C' }]}  onPress={nextStep}>
                             <Text style={tw`text-[#050C9C] text-center`}>Proceed</Text>
                             </TouchableOpacity>
                         </View>

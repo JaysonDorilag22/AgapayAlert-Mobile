@@ -43,7 +43,7 @@ export default function HomeScreen() {
 
   const handleConfirm = () => {
     setModalVisible(false);
-    navigation.navigate('Report');
+    navigation.navigate('ReportAPScreen');
   };
 
   const handleCancel = () => {
