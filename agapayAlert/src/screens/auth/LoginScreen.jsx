@@ -21,17 +21,21 @@ import { loginSchema } from "@validations/login";
 export default function LoginScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
-  const { isAuthenticated, error } = useSelector((state) => state.auth);
+  const { isAuthenticated, error, user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (isAuthenticated) {
       showToast("success", "Login successful");
-      navigation.navigate("Home");
+      if (user.role === "admin") {
+        navigation.navigate("AdminDashboardScreen");
+      } else {
+        navigation.navigate("Home");
+      }
     } else if (error) {
       showToast("error", error);
       dispatch(clearError());
     }
-  }, [isAuthenticated, error, navigation, dispatch]);
+  }, [isAuthenticated, error, navigation, dispatch, user]);
 
   const handleLogin = (values, { setSubmitting }) => {
     dispatch(login(values.email, values.password));
