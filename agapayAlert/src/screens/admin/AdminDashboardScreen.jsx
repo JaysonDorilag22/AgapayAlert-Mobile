@@ -4,9 +4,7 @@ import CategoryChart from "./charts/reportCharts/CategoryChart";
 import LineChart from "./charts/reportCharts/LineChart";
 import StackedBarChart from "./charts/reportCharts/StackedBarChart";
 import StatusChart from "./charts/reportCharts/StatusChart";
-import AdminNavbar from "@components/AdminNavbar";
 import DashboardCards from "./charts/dashBoardCards/DashboardCards";
-import AdminReportTable from "./adminReport/AdminReportTable";
 const { width } = Dimensions.get("window");
 const isLargeScreen = width >= 768;
 
@@ -29,8 +27,6 @@ export default function AdminDashboardScreen({ navigation }) {
           <View style={styles.chartContainer}>
             <StatusChart />
           </View>
-        <Text style={styles.title}>Reports</Text>
-          <AdminReportTable/>
         </View>
       </ScrollView>
     </View>
