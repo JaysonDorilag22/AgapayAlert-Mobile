@@ -67,47 +67,70 @@ export default function AdminReportTable() {
     return text;
   };
 
-  const renderItem = ({ item }) => (
-    <View style={tw`flex-row border-b border-gray-300 py-2 bg-white justify-center items-center`}>
-      {item.missingPerson.images && item.missingPerson.images.length > 0 ? (
-        <Image source={{ uri: item.missingPerson.images[0].url }} style={tw`w-12 h-12 rounded-full self-center`} />
-      ) : (
-        <Text style={tw`flex-1 text-center p-2 min-w-25`}>No Image</Text>
-      )}
-      <Text style={tw`flex-1 text-center p-2 min-w-25`}>{truncateText(item.missingPerson.firstname, 7)}</Text>
-      <Text style={tw`flex-1 text-center p-2 min-w-25`}>{truncateText(item.missingPerson.lastname, 7)}</Text>
-      <Text style={tw`flex-1 text-center p-2 min-w-25`}>{item.category}</Text>
-      <Text style={tw`flex-1 text-center p-2 min-w-25`}>{item.status}</Text>
-      <TouchableOpacity onPress={() => { setSelectedReport(item); setModalVisible(true); }} disabled={processing}>
-        <Icon name="eye" size={20} color="blue" style={tw`mx-2`} />
-      </TouchableOpacity>
-    </View>
-  );
-
   return (
-    <View style={tw`bg-gray-100`}>
+    <View style={tw`bg-gray-100 flex-1`}>
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <ScrollView horizontal>
           <View>
-            <View style={tw`flex-row border-b-2 border-black pb-2 bg-gray-200`}>
-              <Text style={tw`flex-1 font-bold text-center p-2 min-w-25`}>Image</Text>
-              <Text style={tw`flex-1 font-bold text-center p-2 min-w-25`}>First Name</Text>
-              <Text style={tw`flex-1 font-bold text-center p-2 min-w-25`}>Last Name</Text>
-              <Text style={tw`flex-1 font-bold text-center p-2 min-w-25`}>Category</Text>
-              <Text style={tw`flex-1 font-bold text-center p-2 min-w-25`}>Status</Text>
-              <Text style={tw`flex-1 font-bold text-center p-2 min-w-25`}>Actions</Text>
+            {/* Header */}
+            <View style={tw`flex-row border-b-2 border-black pb-2 bg-gray-200 justify-center items-center`}>
+              <Text style={tw`font-bold text-center p-2 w-24`}>Image</Text>
+              <Text style={tw`font-bold text-center p-2 w-24`}>First Name</Text>
+              <Text style={tw`font-bold text-center p-2 w-24`}>Last Name</Text>
+              <Text style={tw`font-bold text-center p-2 w-24`}>Category</Text>
+              <Text style={tw`font-bold text-center p-2 w-24`}>Status</Text>
+              <Text style={tw`font-bold text-center p-2 w-32`}>Actions</Text>
             </View>
+            {/* Table Rows */}
             <FlatList
               data={reports}
-              renderItem={renderItem}
+              renderItem={({ item }) => (
+                <View style={tw`flex-row border-b-2 border-gray-300 bg-white justify-center items-center`}>
+                  {/* Image */}
+                  {item.missingPerson.images && item.missingPerson.images.length > 0 ? (
+                    <Image
+                      source={{ uri: item.missingPerson.images[0].url }}
+                      style={tw`w-12 h-12 rounded-full p-10 m-5`}
+                    />
+                  ) : (
+                    <Text style={tw`text-center p-2 w-24`}>No Image</Text>
+                  )}
+                  {/* First Name */}
+                  <Text style={tw`text-center p-2 w-24`}>{truncateText(item.missingPerson.firstname, 7)}</Text>
+                  {/* Last Name */}
+                  <Text style={tw`text-center p-2 w-25`}>{truncateText(item.missingPerson.lastname, 7)}</Text>
+                  {/* Category */}
+                  <Text style={tw`text-center p-2 w-24`}>{item.category}</Text>
+                  {/* Status */}
+                  <Text style={tw`text-center p-2 w-24`}>{item.status}</Text>
+                  {/* Actions */}
+                  <View style={tw`flex-row justify-center items-center w-32`}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setSelectedReport(item);
+                        setModalVisible(true);
+                      }}
+                      disabled={processing}
+                    >
+                      <Icon name="eye" size={20} color="blue" style={tw`mx-2`} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleDelete(item._id)} disabled={processing}>
+                      <Icon name="trash" size={20} color="red" style={tw`mx-2`} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handlePostToFacebook(item._id)} disabled={processing}>
+                      <Icon name="facebook" size={20} color="blue" style={tw`mx-2`} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
               keyExtractor={(item) => item._id}
             />
           </View>
         </ScrollView>
       )}
-
+      {/* Modal */}
       {selectedReport && (
         <ReportModal
           visible={modalVisible}
@@ -118,6 +141,7 @@ export default function AdminReportTable() {
           processing={processing}
         />
       )}
+      {/* Toast Notification */}
       <Toast ref={(ref) => Toast.setRef(ref)} />
     </View>
   );

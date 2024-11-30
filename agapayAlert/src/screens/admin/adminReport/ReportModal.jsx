@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import {
   View,
   Text,
@@ -9,23 +9,23 @@ import {
   ActivityIndicator,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-// import Video from 'react-native-video';
 import tw from "twrnc";
 
-const ReportModal = ({
+const ReportModal = forwardRef(({
   visible,
   report,
   onClose,
   onDelete,
   onPostToFacebook,
   processing,
-}) => {
+}, ref) => {
   return (
     <Modal
       animationType="slide"
       transparent={true}
       visible={visible}
       onRequestClose={onClose}
+      ref={ref}
     >
       <View style={tw`flex-1 justify-center items-center bg-[rgba(0,0,0,0.5)]`}>
         <View style={tw`bg-white p-5 rounded-lg w-full m-40`}>
@@ -216,6 +216,6 @@ const ReportModal = ({
       </View>
     </Modal>
   );
-};
+});
 
 export default ReportModal;
