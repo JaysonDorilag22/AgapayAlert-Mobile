@@ -67,6 +67,10 @@ export default function SignUpScreen({ navigation }) {
               type: "image/jpeg", // or the appropriate type
               name: "avatar.jpg", // or the appropriate name
             });
+          } else if (key === "address") {
+            for (const addressKey in values.address) {
+              formData.append(`address[${addressKey}]`, values.address[addressKey]);
+            }
           } else {
             formData.append(key, values[key]);
           }
