@@ -13,7 +13,6 @@ const isLargeScreen = width >= 768;
 export default function AdminDashboardScreen({ navigation }) {
   return (
     <View style={styles.screen}>
-      <AdminNavbar navigation={navigation} />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Text style={styles.title}>Admin Dashboard</Text>
         <DashboardCards/>

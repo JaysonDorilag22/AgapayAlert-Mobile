@@ -27,7 +27,9 @@ export default function LoginScreen({ navigation }) {
     if (isAuthenticated) {
       showToast("success", "Login successful");
       if (user.role === "admin") {
-        navigation.navigate("AdminDashboardScreen");
+        navigation.navigate("AdminDrawer", {
+          screen: "AdminDashboardScreen",
+        });
       } else {
         navigation.navigate("Home");
       }
