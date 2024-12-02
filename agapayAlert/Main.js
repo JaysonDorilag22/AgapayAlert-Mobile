@@ -26,6 +26,7 @@ import icon1 from "./assets/logo1.png";
 import { Image, View } from 'react-native';
 import tw from 'twrnc';
 import { Text } from 'react-native';
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
