@@ -2,6 +2,8 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
+import { LogLevel, OneSignal } from 'react-native-onesignal';
+import Constants from 'expo-constants';
 import WelcomeScreen from '@screens/WelcomeScreen';
 import LoginScreen from '@screens/auth/LoginScreen';
 import SignUpScreen from '@screens/auth/SignUpScreen';
@@ -29,6 +31,12 @@ import { Text } from 'react-native';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
+
+OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+OneSignal.initialize(Constants.expoConfig.extra.oneSignalAppId);
+
+// Also need enable notifications to complete OneSignal setup
+OneSignal.Notifications.requestPermission(true);
 
 function CustomDrawerContent(props) {
   return (

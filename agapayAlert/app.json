@@ -12,7 +12,8 @@
       "backgroundColor": "#050C9C"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jaysonarticonadorilag.agapayAlert"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,11 +26,18 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "development"
+        }
+      ]
     ],
     "extra": {
       "eas": {
         "projectId": "30a4be0a-5404-4be7-8803-3463bd725f19"
-      }
+      },
+      "oneSignalAppId": "4948d711-5abb-437c-bd1f-879f45c8e3c5"
     },
     "newArchEnabled": true
   }
