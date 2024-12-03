@@ -13,7 +13,7 @@ export default function ReportAP3({ nextStep, prevStep, formData, setFieldValue,
     const navigation = useNavigation();
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
-    const [images, setImages] = useState(formData.missingPerson.images || []);
+    const [images, setSelectedImage] = useState(formData.missingPerson.images || []);
     const [isLoading, setIsLoading] = useState(false);
     
     const relationshipOptions = [
@@ -40,14 +40,9 @@ export default function ReportAP3({ nextStep, prevStep, formData, setFieldValue,
 
       const handlePickImage = async () => {
         await pickImage((uri) => {
-          if (uri) {
-            // Simulate generating a public_id for the image
-            const public_id = `image_${Date.now()}`;
-            const newImage = { public_id, url: uri };
-            const updatedImages = [...images, newImage];
-            setImages(updatedImages);
-            setFieldValue('missingPerson.images', updatedImages);
-          }
+          console.log("Selected Image", uri);
+          setFieldValue('missingPerson.images', [...images, { url: uri }]);
+          setSelectedImage([...images, { url: uri }]);
         }, setIsLoading);
       };
     
@@ -81,7 +76,7 @@ export default function ReportAP3({ nextStep, prevStep, formData, setFieldValue,
                         <View style={tw`border rounded-md shadow-md`}>
                         <RNPickerSelect
                             onValueChange={(value) => {
-                                setFieldValue('reporter.relationship', value);
+                                setFieldValue('missingPerson.relationship', value);
                             }}
                             items={relationshipOptions}
                             placeholder={{ label: "Select relationship", value: null }}
@@ -92,7 +87,7 @@ export default function ReportAP3({ nextStep, prevStep, formData, setFieldValue,
                             }}
                             />
                         </View>
-                        {touched.relationship && errors.relationship && <Text style={styles.errorText}>{errors.relationship}</Text>}
+                        {touched.missingPerson?.relationship && errors.missingPerson?.relationship && <Text style={styles.errorText}>{errors.missingPerson.relationship}</Text>}
                         <Text style={tw`text-base font-bold mt-3 mb-1`}>Last Known Location</Text>
                         <TextInput style={tw`bg-white border p-2 rounded-md shadow-md`} 
                         placeholder='Type here...' 
