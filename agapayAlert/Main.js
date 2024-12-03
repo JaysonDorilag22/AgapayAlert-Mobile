@@ -23,6 +23,7 @@ import PrivateRoute from "@components/PrivateRoute";
 import AdminDashboardScreen from "@screens/admin/AdminDashboardScreen";
 import AdminNotificationScreen from "@screens/admin/adminNotification/AdminNotificationScreen";
 import AdminReportScreen from "@screens/admin/adminReport/AdminReportScreen";
+import AlprScreen from "@screens/admin/adminALPR/AlprScreen";
 import withAdminNavbar from '@components/withAdminNavbar';
 import icon1 from "./assets/logo1.png";
 import { Image, View } from 'react-native';
@@ -69,6 +70,11 @@ function AdminDrawer() {
         name="AdminReportScreen" 
         component={withAdminNavbar(AdminReportScreen)} 
         options={{ headerShown: false, title: 'Reports' }} 
+      />
+      <Drawer.Screen 
+        name="AdminAlprScreen" 
+        component={withAdminNavbar(AlprScreen)} 
+        options={{ headerShown: false, title: 'Automatic License Plate Recognition' }} 
       />
     </Drawer.Navigator>
   );

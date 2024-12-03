@@ -3,12 +3,14 @@ import { authReducer } from './reducers/authReducers';
 import { userReducer } from './reducers/userReducers';
 import { reportReducer } from './reducers/reportReducers';
 import { pushNotificationReducer } from './reducers/notificationReducers';
+import { alprReducer } from './reducers/alprReducers';
 const store = configureStore({
   reducer: {
     auth: authReducer,
     user: userReducer,
     report: reportReducer,
     notification: pushNotificationReducer,
+    alpr: alprReducer,
   },
 });
 
