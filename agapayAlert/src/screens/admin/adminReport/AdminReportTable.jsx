@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getReports, deleteReport, postToFacebook } from 'src/redux/actions/reportActions';
-import { View, Text, FlatList, TouchableOpacity, ScrollView, ActivityIndicator, Image } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ScrollView, ActivityIndicator, Image, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Toast from 'react-native-toast-message';
 import tw from 'twrnc';
@@ -12,52 +12,36 @@ export default function AdminReportTable() {
   const { reports, loading } = useSelector((state) => state.report);
   const [selectedReport, setSelectedReport] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [processing, setProcessing] = useState(false);
+  const [processingReportId, setProcessingReportId] = useState(null);
 
   useEffect(() => {
     dispatch(getReports());
   }, [dispatch]);
 
   const handleDelete = async (reportId) => {
-    setProcessing(true);
+    setProcessingReportId(reportId);
+    Alert.alert('Processing', 'Deleting report...', [{ text: 'OK' }]);
     try {
       await dispatch(deleteReport(reportId));
-      Toast.show({
-        type: 'success',
-        text1: 'Success',
-        text2: 'Report deleted successfully',
-      });
+      Toast.show({ type: 'success', text1: 'Report deleted successfully' });
     } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Failed to delete report',
-      });
-    } finally {
-      setProcessing(false);
-      setModalVisible(false);
+      Toast.show({ type: 'error', text1: 'Error', text2: error.message || 'Failed to delete report' });
     }
+    setProcessingReportId(null);
+    setModalVisible(false);
   };
 
   const handlePostToFacebook = async (reportId) => {
-    setProcessing(true);
+    setProcessingReportId(reportId);
+    Alert.alert('Processing', 'Posting report to Facebook...', [{ text: 'OK' }]);
     try {
       await dispatch(postToFacebook(reportId));
-      Toast.show({
-        type: 'success',
-        text1: 'Success',
-        text2: 'Report posted to Facebook successfully',
-      });
+      Toast.show({ type: 'success', text1: 'Report posted to Facebook successfully' });
     } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Failed to post report to Facebook',
-      });
-    } finally {
-      setProcessing(false);
-      setModalVisible(false);
+      Toast.show({ type: 'error', text1: 'Error', text2: error.message || 'Failed to post report to Facebook' });
     }
+    setProcessingReportId(null);
+    setModalVisible(false);
   };
 
   const truncateText = (text, maxLength) => {
@@ -112,15 +96,23 @@ export default function AdminReportTable() {
                         setSelectedReport(item);
                         setModalVisible(true);
                       }}
-                      disabled={processing}
+                      disabled={processingReportId === item._id}
                     >
                       <Icon name="eye" size={20} color="blue" style={tw`mx-2`} />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleDelete(item._id)} disabled={processing}>
-                      <Icon name="trash" size={20} color="red" style={tw`mx-2`} />
+                    <TouchableOpacity onPress={() => handleDelete(item._id)} disabled={processingReportId === item._id}>
+                      {processingReportId === item._id ? (
+                        <ActivityIndicator size="small" color="red" style={tw`mx-2`} />
+                      ) : (
+                        <Icon name="trash" size={20} color="red" style={tw`mx-2`} />
+                      )}
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handlePostToFacebook(item._id)} disabled={processing}>
-                      <Icon name="facebook" size={20} color="blue" style={tw`mx-2`} />
+                    <TouchableOpacity onPress={() => handlePostToFacebook(item._id)} disabled={processingReportId === item._id}>
+                      {processingReportId === item._id ? (
+                        <ActivityIndicator size="small" color="blue" style={tw`mx-2`} />
+                      ) : (
+                        <Icon name="facebook" size={20} color="blue" style={tw`mx-2`} />
+                      )}
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -138,7 +130,7 @@ export default function AdminReportTable() {
           onClose={() => setModalVisible(false)}
           onDelete={handleDelete}
           onPostToFacebook={handlePostToFacebook}
-          processing={processing}
+          processing={processingReportId === selectedReport._id}
         />
       )}
       {/* Toast Notification */}

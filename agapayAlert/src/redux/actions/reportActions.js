@@ -64,7 +64,7 @@ export const deleteReport = (reportId) => async (dispatch) => {
 export const postToFacebook = (reportId) => async (dispatch) => {
   dispatch({ type: CREATE_POST_REQUEST });
   try {
-    const { data } = await axios.post(`${server}/reports/fb/${reportId}`, axiosConfig);
+    const { data } = await axios.post(`${server}/reports/${reportId}`, axiosConfig);
     dispatch({ type: CREATE_POST_SUCCESS, payload: data.report });
   } catch (error) {
     dispatch({ type: CREATE_POST_FAIL, payload: error.message });
