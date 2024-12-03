@@ -43,7 +43,6 @@ export default function SignUpScreen({ navigation }) {
 
   const nextStep = async (validateForm) => {
     const errors = await validateForm();
-    console.log("Validation Errors:", errors);
     if (Object.keys(errors).length === 0) {
       setStep(step + 1);
     } else {
@@ -54,18 +53,47 @@ export default function SignUpScreen({ navigation }) {
 
   const prevStep = () => setStep(step - 1);
 
-  const handleSignUp = async (values, {resetForm}) => {
+  const handleSignUp = async (values, { resetForm }) => {
     try {
-      dispatch(signup(values));
+      console.log("Sign up values:", values);
+  
+      // Check if avatar is a valid file URI
+      if (values.avatar && values.avatar.startsWith("file://")) {
+        const formData = new FormData();
+        for (const key in values) {
+          if (key === "avatar") {
+            formData.append("avatar", {
+              uri: values.avatar,
+              type: "image/jpeg", // or the appropriate type
+              name: "avatar.jpg", // or the appropriate name
+            });
+          } else if (key === "address") {
+            for (const addressKey in values.address) {
+              formData.append(`address[${addressKey}]`, values.address[addressKey]);
+            }
+          } else {
+            formData.append(key, values[key]);
+          }
+        }
+        console.log("FormData for sign up:", formData);
+  
+        await dispatch(signup(formData));
+      } else {
+        await dispatch(signup(values));
+      }
+  
+      console.log("Sign up successful, navigating to verification");
       navigation.navigate("verification", { email: values.email });
-      resetForm();
+      const { avatar, ...rest } = values;
+      resetForm({ values: { ...rest, avatar } });
       setStep(1);
     } catch (error) {
-      console.log("Sign up error:", error);
-      showToast("error", error);
+      console.error("Sign up error:", error);
+      showToast("error", error.message);
       dispatch(clearError());
     }
   };
+
   return (
     <Formik
       initialValues={{

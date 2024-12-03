@@ -27,9 +27,11 @@ export default function ReportScreen() {
     return <Text>Error: {error}</Text>;
   }
 
-  const filteredReports = reports.filter((report) =>
-    report.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredReports = reports ? reports.filter((report) => {
+    const { firstname, lastname } = report.missingPerson;
+    const fullName = `${firstname} ${lastname}`.toLowerCase();
+    return fullName.includes(searchQuery.toLowerCase());
+  }) : [];
 
   return (
     <View>
@@ -58,10 +60,12 @@ export default function ReportScreen() {
               <Image source={require('../../assets/AGAPAYALERT.png')} style={tw`overflow-hidden w-30 h-full rounded-l-md`} resizeMode="contain" />
             </View>
             <View style={tw`flex-1 pl-4`}>
-              <Text style={[tw`text-base font-bold mb-1 mt-1 flex-shrink`, { color: index % 2 === 0 ? '#374151' : 'white' }]}>{report.name}</Text>
-              <Text style={[tw`text-xs flex-shrink`, { color: index % 2 === 0 ? '#374151' : 'white' }]}>Age: {report.age}</Text>
-              <Text style={[tw`text-xs flex-shrink`, { color: index % 2 === 0 ? '#374151' : 'white' }]}>Case: {report.type}</Text>
-                <Text style={[tw`text-xs flex-shrink`, { color: index % 2 === 0 ? '#374151' : 'white' }]}>Reward: {report.reward}</Text>
+            <Text style={[tw`text-base font-bold mb-1 mt-1 flex-shrink`, { color: index % 2 === 0 ? '#374151' : 'white' }]}>
+                {report.missingPerson.firstname} {report.missingPerson.lastname}
+              </Text>
+              <Text style={[tw`text-xs flex-shrink`, { color: index % 2 === 0 ? '#374151' : 'white' }]}>
+                Age: {report.missingPerson.age}
+              </Text>
             </View>
         </TouchableOpacity>
         ))}

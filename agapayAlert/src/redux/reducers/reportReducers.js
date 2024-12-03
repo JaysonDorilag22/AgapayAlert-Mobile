@@ -14,6 +14,9 @@ import {
   DELETE_REPORT_FAIL,
   CLEAR_ERROR,
   CLEAR_REPORT_STATE,
+  CREATE_POST_REQUEST,
+  CREATE_POST_SUCCESS,
+  CREATE_POST_FAIL,
 } from "src/constants/actionTypes";
 
 const initialState = {
@@ -28,7 +31,7 @@ export const reportReducer = createReducer(initialState, (builder) => {
       state.loading = true;
     })
     .addCase(GET_REPORTS_SUCCESS, (state, action) => {
-      console.log('Reports:', action.payload);
+      console.log('Reports Fetched:', action.payload); // Log the payload
       state.loading = false;
       state.reports = action.payload;
     })
@@ -38,13 +41,16 @@ export const reportReducer = createReducer(initialState, (builder) => {
       state.error = action.payload;
     })
     .addCase(CREATE_REPORT_REQUEST, (state) => {
+      console.log('Creating Report...');
       state.loading = true;
     })
     .addCase(CREATE_REPORT_SUCCESS, (state, action) => {
       state.loading = false;
       state.reports.push(action.payload);
+      console.log('Report Created:', action.payload); // Log the payload
     })
     .addCase(CREATE_REPORT_FAIL, (state, action) => {
+      console.log('Report Creation Failed:', action.payload);
       state.loading = false;
       state.error = action.payload;
     })
@@ -72,9 +78,27 @@ export const reportReducer = createReducer(initialState, (builder) => {
       state.loading = false;
       state.error = action.payload;
     })
+    .addCase(CREATE_POST_REQUEST, (state) => {
+      state.loading = true;
+    })
+    .addCase(CREATE_POST_SUCCESS, (state, action) => {
+      state.loading = false;
+      state.reports = state.reports.map((report) =>
+        report._id === action.payload._id ? action.payload : report
+      );
+    })
+    .addCase(CREATE_POST_FAIL, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
     .addCase(CLEAR_ERROR, (state) => {
       state.error = null;
     })
+    .addCase(CLEAR_REPORT_STATE, (state) => {
+      state.reports = [];
+      state.loading = false;
+      state.error = null;
+    });
 });
 
 export default reportReducer;

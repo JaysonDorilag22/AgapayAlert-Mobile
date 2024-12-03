@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Text, View, TouchableOpacity, ActivityIndicator, Image, Alert } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { Text, View, TouchableOpacity, ActivityIndicator, Image, Alert, BackHandler } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserInfo, editUserInfo } from "@redux/actions/userActions";
 import { logout } from "@redux/actions/authActions";
+import { useFocusEffect } from '@react-navigation/native';
 import tw from 'twrnc';
 import { pickImage } from "@utils/imageUpload";
 import styles from "@styles/styles";
 import EditProfileForm from "./EditProfileForm";
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -46,6 +48,22 @@ export default function ProfileScreen({ navigation }) {
     }
   }, [user]);
 
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        if (isEditing) {
+          setIsEditing(false);
+          return true;
+        }
+        return false;
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [isEditing])
+  );
+
   const fetchUserInfo = async () => {
     if (user && user._id) {
       dispatch(getUserInfo(user._id));
@@ -84,9 +102,9 @@ export default function ProfileScreen({ navigation }) {
     if (address.zipCode !== localUser.address.zipCode) changes.zipCode = address.zipCode;
     if (address.country !== localUser.address.country) changes.country = address.country;
     if (preferredNotifications !== localUser.preferred_notifications) changes.preferred_notifications = preferredNotifications;
-
+  
     console.log("Changes before update:", changes);
-
+  
     setIsLoading(true);
     const formData = new FormData();
     if (changes.firstname) formData.append("firstname", changes.firstname);
@@ -97,8 +115,13 @@ export default function ProfileScreen({ navigation }) {
     if (changes.state) formData.append("address[state]", changes.state);
     if (changes.zipCode) formData.append("address[zipCode]", changes.zipCode);
     if (changes.country) formData.append("address[country]", changes.country);
-    if (changes.preferred_notifications) formData.append("preferred_notifications", JSON.stringify(changes.preferred_notifications));
-
+  
+    if (changes.preferred_notifications) {
+      changes.preferred_notifications.forEach((notification, index) => {
+        formData.append(`preferred_notifications[${index}]`, notification);
+      });
+    }
+  
     if (changes.avatar && changes.avatar.startsWith("file://")) {
       const fileName = changes.avatar.split('/').pop();
       formData.append("avatar", {
@@ -107,7 +130,7 @@ export default function ProfileScreen({ navigation }) {
         name: fileName,
       });
     }
-
+  
     try {
       const response = await dispatch(editUserInfo(user._id, formData));
       if (response && response.payload) {
@@ -132,15 +155,15 @@ export default function ProfileScreen({ navigation }) {
   };
 
   return (
-    <View>
-      <Text style={styles.title}>Profile</Text>
+    <View style={tw`flex-1 bg-gray-100 p-5 mt-5 items-center`}>
+      <Text style={tw`text-3xl font-bold mb-5`}>Profile</Text>
       {loading || isLoading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#007BFF" />
       ) : localUser ? (
-        <View style={styles.form2}>
-          <TouchableOpacity onPress={handleChooseAvatar}>
+        <View style={tw`bg-white p-5 rounded-lg  w-full max-w-md`}>
+          <TouchableOpacity onPress={handleChooseAvatar} style={tw`items-center`}>
             {isAvatarLoading ? (
-              <ActivityIndicator size="large" color="#0000ff" style={tw`w-24 h-24 rounded-full mb-5`} />
+              <ActivityIndicator size="large" color="#007BFF" style={tw`w-24 h-24 rounded-full mb-5`} />
             ) : avatar ? (
               <Image source={{ uri: avatar }} style={tw`w-24 h-24 rounded-full mb-5 border border-gray-300`} />
             ) : (
@@ -148,7 +171,6 @@ export default function ProfileScreen({ navigation }) {
                 <Text style={tw`text-white`}>No Avatar</Text>
               </View>
             )}
-            <Text style={tw`text-blue-500`}>Change Avatar</Text>
           </TouchableOpacity>
           {isEditing ? (
             <EditProfileForm
@@ -166,16 +188,19 @@ export default function ProfileScreen({ navigation }) {
             />
           ) : (
             <>
-              <Text style={tw`text-xl font-bold mb-2`}>{localUser.firstname} {localUser.lastname}</Text>
-              <Text style={tw`text-base text-gray-600 mb-2`}>{localUser.email}</Text>
-              <TouchableOpacity style={styles.buttonPrimary} onPress={handleEditProfile}>
-                <Text style={styles.textWhite}>Edit Profile</Text>
+              <Text style={tw`text-xl font-bold mb-2 text-center`}>{localUser.firstname} {localUser.lastname}</Text>
+              <Text style={tw`text-base text-gray-600 mb-2 text-center`}>{localUser.email}</Text>
+              <TouchableOpacity style={tw`bg-[#007BFF] p-3 rounded-lg mb-2 flex-row items-center justify-center`} onPress={handleEditProfile}>
+                <Icon name="create-outline" size={20} color="#fff" style={tw`mr-2`} />
+                <Text style={tw`text-white text-center`}>Edit Profile</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.buttonPrimary} onPress={() => navigation.navigate("MyReports")}>
-                <Text style={styles.textWhite}>My Reports</Text>
+              <TouchableOpacity style={tw`bg-[#007BFF] p-3 rounded-lg mb-2 flex-row items-center justify-center`} onPress={() => navigation.navigate("MyReports")}>
+                <Icon name="document-text-outline" size={20} color="#fff" style={tw`mr-2`} />
+                <Text style={tw`text-white text-center`}>My Reports</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.buttonDanger} onPress={handleLogout}>
-                <Text style={styles.textWhite}>Logout</Text>
+              <TouchableOpacity onPress={handleLogout} style={tw`flex-row items-center justify-center border border-red-500 p-3 rounded-lg`}>
+                <Icon name="log-out-outline" size={20} color="#FF0000" style={tw`mr-2`} />
+                <Text style={tw`text-red-500 text-center`}>Logout</Text>
               </TouchableOpacity>
             </>
           )}
@@ -183,8 +208,9 @@ export default function ProfileScreen({ navigation }) {
       ) : (
         <View>
           <Text style={tw`text-base text-gray-600 mb-5`}>No user information available.</Text>
-          <TouchableOpacity style={styles.buttonPrimary} onPress={fetchUserInfo}>
-            <Text style={styles.textWhite}>Fetch User Info</Text>
+          <TouchableOpacity style={tw`bg-[#007BFF] p-3 rounded-lg flex-row items-center justify-center`} onPress={fetchUserInfo}>
+            <Icon name="refresh-outline" size={20} color="#fff" style={tw`mr-2`} />
+            <Text style={tw`text-white text-center`}>Fetch User Info</Text>
           </TouchableOpacity>
         </View>
       )}

@@ -1,8 +1,7 @@
-// HomeScreen.jsx
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Image, Modal } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, Image, BackHandler, Alert } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { logout } from '@redux/actions/userActions';
 import { showToast } from '@utils/toastService';
 import styles from '@styles/styles';
@@ -15,6 +14,28 @@ export default function HomeScreen() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
+  const [backPressCount, setBackPressCount] = useState(0);
+
+  useFocusEffect(
+    useCallback(() => {
+      const backAction = () => {
+        if (backPressCount === 0) {
+          setBackPressCount(1);
+          showToast('info', 'Press back again to exit');
+          setTimeout(() => setBackPressCount(0), 2000); // Reset back press count after 2 seconds
+          return true;
+        } else if (backPressCount === 1) {
+          BackHandler.exitApp();
+          return true;
+        }
+        return false;
+      };
+
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+      return () => backHandler.remove();
+    }, [backPressCount])
+  );
 
   const handleReportPress = () => {
     setModalVisible(true);
@@ -22,7 +43,7 @@ export default function HomeScreen() {
 
   const handleConfirm = () => {
     setModalVisible(false);
-    navigation.navigate('Report');
+    navigation.navigate('ReportAPScreen');
   };
 
   const handleCancel = () => {

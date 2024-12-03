@@ -1,3 +1,5 @@
+
+//SignUpStep3
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -36,38 +38,32 @@ export default function SignUpStep3({
           showToast("error", "Permission denied");
         }
       } catch (error) {
-        console.error("Permission error: ", error);
+        console.error(error);
       }
     };
-
     checkPermissions();
   }, []);
 
   const handleSignUpWithValidation = async () => {
-    // Validate form
     const errors = await validateForm();
     if (Object.keys(errors).length > 0) {
       const errorMessages = Object.values(errors).join(', ');
-      showToast("error", errorMessages);
       return;
     }
-    // Check if passwords match
     if (formData.password !== formData.confirmPassword) {
       showToast("error", "Passwords do not match");
       return;
     }
+  
     setLoading(true);
     try {
       await handleSignUp();
     } catch (error) {
-      console.error("Sign up error: ", error);
+      console.error(error);
       showToast("error", "Sign up failed");
       setLoading(false);
-      return;
     }
-    setLoading(false);
   };
-
   return (
     <View style={tw`flex-1 items-center`}>
       <Text style={tw`font-bold text-26px mb-1 text-center`}>Email verification</Text>
@@ -150,7 +146,7 @@ export default function SignUpStep3({
           disabled={loading}
         >
           {loading ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color="#050C9C" />
           ) : (
             <Text style={styles.textPrimary}>Sign Up</Text>
           )}

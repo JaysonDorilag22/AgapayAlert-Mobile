@@ -20,12 +20,11 @@ export default function ReportDetailsScreen() {
                 <View style={tw`items-center mb-4`}>
                 <Image source={imageSource} style={tw`w-40 h-40 rounded-full`} resizeMode="contain" />
                 </View>
-                <Text style={tw`text-xl font-bold mb-2`}>{report.name}</Text>
-                <Text style={tw`text-base mb-2`}>Age: {report.age}</Text>
-                <Text style={tw`text-base mb-2`}>Type: {report.type}</Text>
-                <Text style={tw`text-base mb-2`}>Description: {report.description}</Text>
-                <Text style={tw`text-base mb-2`}>Contact Information: {report.contact_information}</Text>
-                <Text style={tw`text-base mb-2`}>Reward: ${report.reward}</Text>
+                <Text style={tw`text-xl font-bold mb-2`}>{report.missingPerson.firstname} {report.missingPerson.lastname}</Text>
+                <Text style={tw`text-base mb-2`}>Age: {report.missingPerson.age}</Text>
+                <Text style={tw`text-base mb-2`}>Age: {report.missingPerson.lastSeen}</Text>
+                <Text style={tw`text-base mb-2`}>Last Seen Wearing: {report.missingPerson.lastKnownClothing}</Text>
+                <Text style={tw`text-base mb-2`}>Last Known Location: {report.missingPerson.lastKnownLocation}</Text>
             </ScrollView>
         </View>
     );

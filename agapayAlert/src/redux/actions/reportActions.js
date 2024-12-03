@@ -15,6 +15,9 @@ import {
   DELETE_REPORT_FAIL,
   CLEAR_ERROR,
   CLEAR_REPORT_STATE,
+  CREATE_POST_REQUEST,
+  CREATE_POST_SUCCESS,
+  CREATE_POST_FAIL,
 } from "src/constants/actionTypes";
 
 export const getReports = () => async (dispatch) => {
@@ -22,19 +25,43 @@ export const getReports = () => async (dispatch) => {
   try {
     const { data } = await axios.get(`${server}/reports/getall`, axiosConfig);
     console.log('Fetched Data:', data);
-    dispatch({ type: GET_REPORTS_SUCCESS, payload: data.data });
+    dispatch({ type: GET_REPORTS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({ type: GET_REPORTS_FAIL, payload: error.message });
   }
 };
 
-export const addReport = (reportData) => async (dispatch) => {
+const logFormData = (formData) => {
+  for (let pair of formData.entries()) {
+    console.log(`${pair[0]}: ${pair[1]}`);
+  }
+};
+
+export const addReport = (formData) => async (dispatch) => {
   dispatch({ type: CREATE_REPORT_REQUEST });
   try {
-    const { data } = await axios.post(`${server}/reports/create`, reportData, axiosConfig);
-    dispatch({ type: CREATE_REPORT_SUCCESS, payload: data.report });
+/*     const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }; */
+
+    console.log('Sending request to:', `${server}/reports/create`);
+    logFormData(formData); // Log the FormData contents
+
+    const response = await axios.post(`${server}/reports/create`, formData, axiosConfig);
+
+    console.log('Response:', response);
+    if (response.status === 201) {
+      dispatch({ type: CREATE_REPORT_SUCCESS, payload: response.data });
+    } else {
+      console.error('Unexpected response status:', response.status);
+      dispatch({ type: CREATE_REPORT_FAIL, payload: 'Failed to create report' });
+    }
   } catch (error) {
-    dispatch({ type: CREATE_REPORT_FAIL, payload: error.message });
+    console.error('Error caught in catch block:', error);
+    const errorMessage = error.response?.data?.message || error.message;
+    dispatch({ type: CREATE_REPORT_FAIL, payload: errorMessage });
   }
 };
 
@@ -51,10 +78,20 @@ export const updateReport = (reportData) => async (dispatch) => {
 export const deleteReport = (reportId) => async (dispatch) => {
   dispatch({ type: DELETE_REPORT_REQUEST });
   try {
-    await axios.delete(`${server}/reports/delete/${reportId}`, axiosConfig);
+    await axios.delete(`${server}/reports/${reportId}`, axiosConfig);
     dispatch({ type: DELETE_REPORT_SUCCESS, payload: reportId });
   } catch (error) {
     dispatch({ type: DELETE_REPORT_FAIL, payload: error.message });
+  }
+};
+
+export const postToFacebook = (reportId) => async (dispatch) => {
+  dispatch({ type: CREATE_POST_REQUEST });
+  try {
+    const { data } = await axios.post(`${server}/reports/${reportId}`, axiosConfig);
+    dispatch({ type: CREATE_POST_SUCCESS, payload: data.report });
+  } catch (error) {
+    dispatch({ type: CREATE_POST_FAIL, payload: error.message });
   }
 };
 
