@@ -22,9 +22,9 @@ export default function ReportAPScreen({ navigation }) {
     const initialValues = {
       reporter: {
         _id: '',
-        relationship: '',
       },
         missingPerson: {
+          relationship: '',
           firstname: '',
           lastname: '',
           dateOfBirth: '',
@@ -47,12 +47,7 @@ export default function ReportAPScreen({ navigation }) {
           wearsContactLenses: false,
           bloodType: '',
           reward: '',
-          images: [
-            {
-              public_id: '',
-              url: '',
-            },
-          ],
+          images: null,
           video: {
             public_id: '',
             url: '',
@@ -107,25 +102,24 @@ export default function ReportAPScreen({ navigation }) {
     const prevStep = () => setStep(step - 1);
 
     const handleReport = async (values, { resetForm }) => {
-
       // Create FormData object
       const formData = new FormData();
     
       // Reporter Information
       formData.append("reporter", currentUser._id); // Assuming 'reporter.id' is the ObjectId of the reporter
-      formData.append("relationship", values.reporter.relationship); // Relationship of the reporter to the missing person
     
       // Missing Person Information
+      formData.append("missingPerson[relationship]", values.missingPerson.relationship); // Relationship of the reporter to the missing person
       formData.append("missingPerson[firstname]", values.missingPerson.firstname);
       formData.append("missingPerson[lastname]", values.missingPerson.lastname);
-      formData.append("missingPerson[dateOfBirth]", values.missingPerson.dateOfBirth); // Ensure date is in ISO string format
+      formData.append("missingPerson[dateOfBirth]", values.missingPerson.dateOfBirth.toISOString()); // Ensure date is in ISO string format
       formData.append("missingPerson[age]", values.missingPerson.age);
       formData.append("missingPerson[assignedSexAtBirth]", values.missingPerson.assignedSexAtBirth);
       formData.append("missingPerson[scarsOrMarks]", values.missingPerson.scarsOrMarks);
       formData.append("missingPerson[prostheticsOrImplants]", values.missingPerson.prostheticsOrImplants);
       formData.append("missingPerson[lastKnownClothing]", values.missingPerson.lastKnownClothing);
       formData.append("missingPerson[lastKnownLocation]", values.missingPerson.lastKnownLocation);
-      formData.append("missingPerson[lastSeen]", values.missingPerson.lastSeen);
+      formData.append("missingPerson[lastSeen]", values.missingPerson.lastSeen.toISOString());
       formData.append("missingPerson[causeOfDisappearance]", values.missingPerson.causeOfDisappearance);
       formData.append("missingPerson[currentHairColor]", values.missingPerson.currentHairColor);
       formData.append("missingPerson[dyedHairColor]", values.missingPerson.dyedHairColor);
@@ -142,52 +136,49 @@ export default function ReportAPScreen({ navigation }) {
       formData.append("missingPerson[contactNumber]", values.missingPerson.contactNumber);
       formData.append("missingPerson[socialMediaAccount]", values.missingPerson.socialMediaAccount);
     
-      // Append images
-      values.missingPerson.images.forEach((image, index) => {
-        if (image.url && typeof image.url === 'string' && image.url.startsWith("file://")) {
-          const fileName = image.url.split("/").pop(); // Extract the file name
-          formData.append(`missingPerson.images[${index}].url`, {
-            uri: image.url,
-            type: "image/jpeg", // or the appropriate type
-            name: fileName,
-          });
-        } else if (image.url && typeof image.url === 'string') {
-          formData.append(`missingPerson.images[${index}].url`, image.url);
-        }
-        formData.append(`missingPerson.images[${index}].public_id`, image.public_id);
-      });
+      // Append images if they exist
+      if (Array.isArray(values.missingPerson.images)) {
+        values.missingPerson.images.forEach((image, index) => {
+          if (image.url && typeof image.url === 'string' && image.url.startsWith("file://")) {
+            const fileName = image.url.split("/").pop(); // Extract the file name
+            formData.append(`missingPerson.images[${index}].file`, {
+              uri: image.url,
+              type: "image/jpeg", // or the appropriate type
+              name: fileName,
+            });
+          } else if (image.url && typeof image.url === 'string') {
+            formData.append(`missingPerson.images[${index}].url`, image.url);
+          }
+          formData.append(`missingPerson.images[${index}].public_id`, image.public_id);
+        });
+      }
     
       // Append video (if applicable)
-      if  (values.missingPerson.video.url) {
+      if (values.missingPerson.video.url) {
         if (values.missingPerson.video.url.startsWith("file://")) {
-          formData.append("missingPerson.video", {
+          formData.append("missingPerson.video.file", {
             uri: values.missingPerson.video.url,
             type: "video/mp4", // Ensure correct type
             name: "video.mp4",
           });
+        } else {
+          formData.append("missingPerson.video.url", values.missingPerson.video.url);
         }
+        formData.append("missingPerson.video.public_id", values.missingPerson.video.public_id);
       }
     
-      // Category and Status
-      formData.append("category", "Missing"); // Missing, Abducted, etc.
-      formData.append("status", "Pending"); // Default status
+      // Append status and category
+      formData.append("status", values.status);
+      formData.append("category", values.category);
     
       console.log("Form data:", formData);
-      
-      try {
-        // Dispatch the action to create the report
-        const response = await dispatch(addReport(formData));
     
-        if (response && response.type === "ADD_REPORT_SUCCESS") {
-          console.log("Report submission successful");
-          showToast("success", "Report submitted successfully");
-          resetForm({ values: initialValues });
-          setStep(1);
-        } else {
-          console.error("Report submission failed:", response?.message || "Unknown error");
-          showToast("error", "Report submission failed");
-          setStep(5);
-        }
+      try {
+        await dispatch(addReport(formData));
+        console.log("Report submission successful");
+        showToast("success", "Report submitted successfully");
+        resetForm({ values: initialValues });
+        setStep(1);
       } catch (error) {
         console.error("Report submission error:", error);
         showToast("error", error.message || "An error occurred");
