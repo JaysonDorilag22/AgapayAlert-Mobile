@@ -2,11 +2,13 @@ import { configureStore } from '@reduxjs/toolkit';
 import { authReducer } from './reducers/authReducers';
 import { userReducer } from './reducers/userReducers';
 import { reportReducer } from './reducers/reportReducers';
+import { pushNotificationReducer } from './reducers/notificationReducers';
 const store = configureStore({
   reducer: {
     auth: authReducer,
     user: userReducer,
     report: reportReducer,
+    notification: pushNotificationReducer,
   },
 });
 
@@ -24,7 +26,7 @@ const store = configureStore({
 // export const server = "http://192.168.115.191:5000/api";
 
 // wanel haus
-export const server = "http://192.168.254.157:5000/api";
+export const server = "http://192.168.169.191:5000/api";
 
 //wanel cp
 // export const server = "http://192.168.43.129:5000/api";

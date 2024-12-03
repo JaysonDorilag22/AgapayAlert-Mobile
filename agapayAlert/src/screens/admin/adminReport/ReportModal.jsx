@@ -17,6 +17,7 @@ const ReportModal = forwardRef(({
   onClose,
   onDelete,
   onPostToFacebook,
+  onSendNotifications,
   processing,
 }, ref) => {
   return (
@@ -159,17 +160,6 @@ const ReportModal = forwardRef(({
               <Text style={tw`font-bold`}>Reward:</Text>
               <Text>{report.missingPerson.reward}</Text>
             </View>
-            {/* {report.missingPerson.video && report.missingPerson.video.url && (
-              <View style={tw`mb-4`}>
-                <Text style={tw`font-bold`}>Video:</Text>
-                <Video
-                  source={{ uri: report.missingPerson.video.url }}
-                  style={tw`w-full h-40`}
-                  controls
-                  onError={(e) => console.log('Video Error:', e)}
-                />
-              </View>
-            )} */}
           </ScrollView>
           <View style={tw`flex-col justify-around mt-4`}>
             <TouchableOpacity
@@ -183,8 +173,8 @@ const ReportModal = forwardRef(({
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => console.log("Push Notification")}
-              disabled={processing}
+              onPress={() => onSendNotifications(report)}
+              disabled={processing || report.status !== 'Confirmed'}
               style={tw`flex-row items-center bg-green-500 p-2 rounded mb-2`}
             >
               <Icon name="bell" size={20} color="white" />
