@@ -24,10 +24,12 @@ export const getReports = () => async (dispatch) => {
   dispatch({ type: GET_REPORTS_REQUEST });
   try {
     const { data } = await axios.get(`${server}/reports/getall`, axiosConfig);
-    console.log('Fetched Data:', data);
-    dispatch({ type: GET_REPORTS_SUCCESS, payload: data });
+    dispatch({ type: GET_REPORTS_SUCCESS, payload: data.data }); // Ensure payload is the reports array
+    console.log('Data:', data);
+    return data; // Return the data
   } catch (error) {
     dispatch({ type: GET_REPORTS_FAIL, payload: error.message });
+    throw error; // Throw the error to be caught in the component
   }
 };
 
@@ -40,12 +42,6 @@ const logFormData = (formData) => {
 export const addReport = (formData) => async (dispatch) => {
   dispatch({ type: CREATE_REPORT_REQUEST });
   try {
-/*     const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }; */
-
     console.log('Sending request to:', `${server}/reports/create`);
     logFormData(formData); // Log the FormData contents
 
@@ -96,4 +92,3 @@ export const postToFacebook = (reportId) => async (dispatch) => {
 };
 
 export const clearError = () => ({ type: CLEAR_ERROR });
-export const clearReportState = () => ({ type: CLEAR_REPORT_STATE });

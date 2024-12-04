@@ -10,10 +10,11 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import FeedbackForm from '@components/FeedbackForm';
 import OverallRatingChart from './admin/adminFeedback/OverallRatingChart';
 
+
 export default function FeedbackScreen() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.auth.user._id);
+  const userId = useSelector((state) => state.auth.user?._id);
   const { userFeedback, loading, error } = useSelector((state) => state.feedback);
   const [modalVisible, setModalVisible] = useState(false);
   const [currentFeedback, setCurrentFeedback] = useState(null);
@@ -21,7 +22,9 @@ export default function FeedbackScreen() {
   const [ratings, setRatings] = useState(0);
 
   useEffect(() => {
-    dispatch(getUserFeedback(userId));
+    if (userId) {
+      dispatch(getUserFeedback(userId));
+    }
   }, [dispatch, userId]);
 
   const handleEdit = (feedback) => {
@@ -53,8 +56,8 @@ export default function FeedbackScreen() {
     <View style={tw`flex-1`}>
       <NavbarWithSubmenu navigation={navigation} />
       <ScrollView contentContainerStyle={tw`p-4`}>
-        <OverallRatingChart/>
         <FeedbackForm />
+        <OverallRatingChart />
         <Text style={tw`text-lg font-bold mb-4 mt-8`}>Your Feedback</Text>
         {loading ? (
           <ActivityIndicator size="large" color="#123f7b" />
@@ -64,11 +67,8 @@ export default function FeedbackScreen() {
           userFeedback
             .slice()
             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-            .map((feedback, index) => (
-              <View
-                key={feedback._id || `feedback-${index}`}
-                style={tw`bg-gray-100 p-4 mb-4 rounded-lg`}
-              >
+            .map((feedback) => (
+              <View key={feedback._id} style={tw`bg-gray-100 p-4 mb-4 rounded-lg`}>
                 {feedback.comment && (
                   <>
                     <Text style={tw`text-base font-bold`}>Comment:</Text>

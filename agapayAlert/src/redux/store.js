@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { authReducer } from './reducers/authReducers';
 import { userReducer } from './reducers/userReducers';
-import { reportReducer } from './reducers/reportReducers';
 import { pushNotificationReducer } from './reducers/notificationReducers';
 import { alprReducer } from './reducers/alprReducers';
 import { feedbackReducer } from './reducers/feedbackReducers';
+import reportReducer from './reducers/reportReducers';
 const store = configureStore({
   reducer: {
     auth: authReducer,

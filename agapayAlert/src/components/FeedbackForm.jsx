@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 
 const FeedbackForm = () => {
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.auth.user._id);
+  const userId = useSelector((state) => state.auth.user?._id);
   const [loading, setLoading] = useState(false);
 
   const validationSchema = Yup.object().shape({
@@ -18,6 +18,11 @@ const FeedbackForm = () => {
   });
 
   const handleSubmit = (values, { resetForm }) => {
+    if (!userId) {
+      Alert.alert('Error', 'You must be logged in to submit feedback.');
+      return;
+    }
+
     setLoading(true);
     const feedbackData = {
       userId,

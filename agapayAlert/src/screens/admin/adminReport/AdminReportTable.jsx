@@ -12,6 +12,7 @@ import { sendEmailNotification, sendPushNotification } from '@redux/actions/noti
 export default function AdminReportTable() {
   const dispatch = useDispatch();
   const { reports, loading } = useSelector((state) => state.report);
+
   const [selectedReport, setSelectedReport] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [notificationModalVisible, setNotificationModalVisible] = useState(false);
@@ -24,7 +25,16 @@ export default function AdminReportTable() {
   });
 
   useEffect(() => {
-    dispatch(getReports());
+    const fetchReports = async () => {
+      try {
+        const response = await dispatch(getReports());
+        console.log('Fetched Data:', response);
+      } catch (error) {
+        console.error('Error fetching reports:', error);
+      }
+    };
+
+    fetchReports();
   }, [dispatch]);
 
   const handleDelete = async (reportId) => {
@@ -123,67 +133,64 @@ export default function AdminReportTable() {
             {/* Table Rows */}
             <FlatList
               data={reports}
-              renderItem={({ item }) => (
-                <View style={tw`flex-row border-b-2 border-gray-300 bg-white justify-center items-center`}>
-                  {/* Image */}
-                  {item.missingPerson.images && item.missingPerson.images.length > 0 ? (
-                    <Image
-                      source={{ uri: item.missingPerson.images[0].url }}
-                      style={tw`w-10 h-10 rounded-full p-10 m-2`}
-                    />
-                  ) : (
-                    <Text style={tw`text-center p-2 w-20`}>No Image</Text>
-                  )}
-                  {/* First Name */}
-                  <Text style={tw`text-center p-2 w-20`}>{truncateText(item.missingPerson.firstname, 7)}</Text>
-                  {/* Last Name */}
-                  <Text style={tw`text-center p-2 w-20`}>{truncateText(item.missingPerson.lastname, 7)}</Text>
-                  {/* Category */}
-                  <Text style={tw`text-center p-2 w-20`}>{item.category}</Text>
-                  {/* Status */}
-                  <Text style={tw`text-center p-2 w-20`}>{item.status}</Text>
-                  {/* Actions */}
-                  <View style={tw`flex-row justify-center items-center w-32`}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        setSelectedReport(item);
-                        setModalVisible(true);
-                      }}
-                      disabled={processingReportId === item._id}
-                    >
-                      <Icon name="eye" size={20} color="blue" style={tw`mx-1`} />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleDelete(item._id)} disabled={processingReportId === item._id}>
-                      {processingReportId === item._id ? (
-                        <ActivityIndicator size="small" color="red" style={tw`mx-1`} />
-                      ) : (
-                        <Icon name="trash" size={20} color="red" style={tw`mx-1`} />
-                      )}
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handlePostToFacebook(item._id)} disabled={processingReportId === item._id}>
-                      {processingReportId === item._id ? (
-                        <ActivityIndicator size="small" color="blue" style={tw`mx-1`} />
-                      ) : (
-                        <Icon name="facebook" size={20} color="blue" style={tw`mx-1`} />
-                      )}
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => openNotificationModal(item, 'email')} disabled={item.status !== 'Confirmed' || processingReportId === item._id}>
-                      {processingReportId === item._id ? (
-                        <ActivityIndicator size="small" color="green" style={tw`mx-1`} />
-                      ) : (
-                        <Icon name="envelope" size={20} color={item.status === 'Confirmed' ? 'green' : 'gray'} style={tw`mx-1`} />
-                      )}
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => openNotificationModal(item, 'push')} disabled={item.status !== 'Confirmed' || processingReportId === item._id}>
-                      {processingReportId === item._id ? (
-                        <ActivityIndicator size="small" color="green" style={tw`mx-1`} />
-                      ) : (
-                        <Icon name="bell" size={20} color={item.status === 'Confirmed' ? 'green' : 'gray'} style={tw`mx-1`} />
-                      )}
-                    </TouchableOpacity>
+              renderItem={({ item }) => {
+                console.log('Rendering item:', item); 
+                return (
+                  <View style={tw`flex-row border-b-2 border-gray-300 bg-white justify-center items-center`}>
+                    {item.images && item.images.length > 0 ? (
+                      <Image
+                        source={{ uri: item.images[0].url }}
+                        style={tw`w-10 h-10 rounded-full p-10 m-2`}
+                      />
+                    ) : (
+                      <Text style={tw`text-center p-2 w-20`}>No Image</Text>
+                    )}
+                    <Text style={tw`text-center p-2 w-20`}>{truncateText(item.missingPerson.firstname, 7)}</Text>
+                    <Text style={tw`text-center p-2 w-20`}>{truncateText(item.missingPerson.lastname, 7)}</Text>
+                    <Text style={tw`text-center p-2 w-20`}>{item.category}</Text>
+                    <Text style={tw`text-center p-2 w-20`}>{item.status}</Text>
+                    <View style={tw`flex-row justify-center items-center w-32`}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          setSelectedReport(item);
+                          setModalVisible(true);
+                        }}
+                        disabled={processingReportId === item._id}
+                      >
+                        <Icon name="eye" size={20} color="blue" style={tw`mx-1`} />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => handleDelete(item._id)} disabled={processingReportId === item._id}>
+                        {processingReportId === item._id ? (
+                          <ActivityIndicator size="small" color="red" style={tw`mx-1`} />
+                        ) : (
+                          <Icon name="trash" size={20} color="red" style={tw`mx-1`} />
+                        )}
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => handlePostToFacebook(item._id)} disabled={processingReportId === item._id}>
+                        {processingReportId === item._id ? (
+                          <ActivityIndicator size="small" color="blue" style={tw`mx-1`} />
+                        ) : (
+                          <Icon name="facebook" size={20} color="blue" style={tw`mx-1`} />
+                        )}
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => openNotificationModal(item, 'email')} disabled={item.status !== 'Confirmed' || processingReportId === item._id}>
+                        {processingReportId === item._id ? (
+                          <ActivityIndicator size="small" color="green" style={tw`mx-1`} />
+                        ) : (
+                          <Icon name="envelope" size={20} color={item.status === 'Confirmed' ? 'green' : 'gray'} style={tw`mx-1`} />
+                        )}
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => openNotificationModal(item, 'push')} disabled={item.status !== 'Confirmed' || processingReportId === item._id}>
+                        {processingReportId === item._id ? (
+                          <ActivityIndicator size="small" color="green" style={tw`mx-1`} />
+                        ) : (
+                          <Icon name="bell" size={20} color={item.status === 'Confirmed' ? 'green' : 'gray'} style={tw`mx-1`} />
+                        )}
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                </View>
-              )}
+                );
+              }}
               keyExtractor={(item) => item._id}
             />
           </View>

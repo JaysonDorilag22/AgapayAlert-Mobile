@@ -41,15 +41,14 @@ const ReportModal = forwardRef(({
             Report Details
           </Text>
           <ScrollView style={tw`mb-4`}>
-            {report.missingPerson.images &&
-              report.missingPerson.images.length > 0 && (
-                <View style={tw`mb-4 items-center`}>
-                  <Image
-                    source={{ uri: report.missingPerson.images[0].url }}
-                    style={tw`w-40 h-40 rounded-full`}
-                  />
-                </View>
-              )}
+            {report.images && report.images.length > 0 && (
+              <View style={tw`mb-4 items-center`}>
+                <Image
+                  source={{ uri: report.images[0].url }}
+                  style={tw`w-40 h-40 rounded-full`}
+                />
+              </View>
+            )}
             <View style={tw`mb-4`}>
               <Text style={tw`font-bold`}>Name:</Text>
               <Text>
