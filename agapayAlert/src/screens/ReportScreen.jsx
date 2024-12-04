@@ -17,10 +17,12 @@ export default function ReportScreen() {
 
   useEffect(() => {
     dispatch(getReports());
+    console.log(reports);
   }, [dispatch]);
 
   if (loading) {
     return <Text>Loading...</Text>;
+    
   }
 
   if (error) {
@@ -28,6 +30,7 @@ export default function ReportScreen() {
   }
 
   const filteredReports = reports ? reports.filter((report) => {
+    console.log(report.missingPerson);
     const { firstname, lastname } = report.missingPerson;
     const fullName = `${firstname} ${lastname}`.toLowerCase();
     return report.status === "Confirmed" && fullName.includes(searchQuery.toLowerCase());
@@ -65,7 +68,15 @@ export default function ReportScreen() {
               ]}
             >
               <View style={tw`w-30 h-full bg-gray-200 rounded-l-md`}>
-                <Image source={require('../../assets/AGAPAYALERT.png')} style={tw`overflow-hidden w-30 h-full rounded-l-md`} resizeMode="contain" />
+              {report.images && report.images.length > 0 ? (
+                      <Image
+                        source={{ uri: report.images[0].url }}
+                        style={tw`overflow-hidden w-30 h-full rounded-l-md`}
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <Text style={tw`text-center p-2 w-20`}>No Image</Text>
+                    )}
               </View>
               <View style={tw`flex-1 pl-4`}>
                 <Text style={[tw`text-base font-bold mb-1 mt-1 flex-shrink`, { color: index % 2 === 0 ? '#374151' : 'white' }]}>

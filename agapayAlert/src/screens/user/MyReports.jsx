@@ -50,8 +50,8 @@ export default function MyReports() {
           <Text style={tw`text-base text-center`}>No Reports have been made</Text>
         ) : (
           filteredReports.map((report, index) => {
-            const imageSource = report.images && report.images.length > 0 && typeof report.images[0] === 'string'
-            ? { uri: report.images[0] }
+            const imageSource = report.missingPerson.images && report.missingPerson.images.length > 0 && typeof report.missingPerson.images[0] === 'string'
+            ? { uri: report.missingPerson.images[0] }
             : require('../../../assets/AGAPAYALERT.png'); // Fallback image
 
             const formattedDate = new Date(report.missingPerson.lastSeen).toLocaleDateString('en-US', {
@@ -69,7 +69,15 @@ export default function MyReports() {
                 ]}
               >
                 <View style={tw`w-30 h-full bg-gray-200 rounded-l-md`}>
-                  <Image source={imageSource} style={tw`overflow-hidden w-30 h-full rounded-l-md`} resizeMode="contain" />
+                {report.images && report.images.length > 0 ? (
+                      <Image
+                        source={{ uri: report.images[0].url }}
+                        style={tw`overflow-hidden w-30 h-full rounded-l-md`}
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <Text style={tw`text-center p-2 w-20`}>No Image</Text>
+                    )}
                 </View>
                 <View style={tw`flex-1 pl-4`}>
                   <Text style={[tw`text-base font-bold mb-1 mt-1 flex-shrink`, { color: index % 2 === 0 ? '#374151' : 'white' }]}>{report.missingPerson.firstname} {report.missingPerson.lastname}</Text>

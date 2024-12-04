@@ -18,7 +18,15 @@ export default function ReportDetailsScreen() {
         <View style={tw`pt-6`}>
              <ScrollView contentContainerStyle={tw`p-4`}>
                 <View style={tw`items-center mb-4`}>
-                <Image source={imageSource} style={tw`w-40 h-40 rounded-full`} resizeMode="contain" />
+                {report.images && report.images.length > 0 ? (
+                      <Image
+                        source={{ uri: report.images[0].url }}
+                        style={tw`w-40 h-40 rounded-full`}
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <Text style={tw`text-center p-2 w-20`}>No Image</Text>
+                    )}
                 </View>
                 <Text style={tw`text-xl font-bold mb-2`}>{report.missingPerson.firstname} {report.missingPerson.lastname}</Text>
                 <Text style={tw`text-base mb-2`}>Age: {report.missingPerson.age}</Text>
