@@ -194,7 +194,7 @@ export default function ProfileScreen({ navigation }) {
                 <Icon name="create-outline" size={20} color="#fff" style={tw`mr-2`} />
                 <Text style={tw`text-white text-center`}>Edit Profile</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={tw`bg-[#007BFF] p-3 rounded-lg mb-2 flex-row items-center justify-center`} onPress={() => navigation.navigate("MyReports")}>
+              <TouchableOpacity style={tw`bg-[#007BFF] p-3 rounded-lg mb-2 flex-row items-center justify-center`} onPress={() => navigation.navigate("MyReport")}>
                 <Icon name="document-text-outline" size={20} color="#fff" style={tw`mr-2`} />
                 <Text style={tw`text-white text-center`}>My Reports</Text>
               </TouchableOpacity>

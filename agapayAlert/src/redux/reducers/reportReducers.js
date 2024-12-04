@@ -4,6 +4,12 @@ import {
   GET_REPORTS_REQUEST,
   GET_REPORTS_SUCCESS,
   GET_REPORTS_FAIL,
+  GET_SINGLE_REPORT_REQUEST,
+  GET_SINGLE_REPORT_SUCCESS,
+  GET_SINGLE_REPORT_FAIL,
+  GET_REPORTS_BY_USER_REQUEST,
+  GET_REPORTS_BY_USER_SUCCESS,
+  GET_REPORTS_BY_USER_FAIL,
   CREATE_REPORT_REQUEST,
   CREATE_REPORT_SUCCESS,
   CREATE_REPORT_FAIL,
@@ -41,6 +47,32 @@ const reportReducer = createReducer(initialState, (builder) => {
       state.reports = action.payload.reports; // Ensure this matches the structure of the fetched data
     })
     .addCase(GET_REPORTS_FAIL, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
+    .addCase(GET_SINGLE_REPORT_REQUEST, (state) => {
+      state.loading = true;
+    })
+    .addCase(GET_SINGLE_REPORT_SUCCESS, (state, action) => {
+      console.log('Single Report Fetched:', action.payload); // Log the payload
+      state.loading = false;
+      state.reports = action.payload;
+    })
+    .addCase(GET_SINGLE_REPORT_FAIL, (state, action) => {
+      console.log('Single Report Fetch Failed:', action.payload);
+      state.loading = false;
+      state.error = action.payload;
+    })
+    .addCase(GET_REPORTS_BY_USER_REQUEST, (state) => {
+      state.loading = true;
+    })
+    .addCase(GET_REPORTS_BY_USER_SUCCESS, (state, action) => {
+      console.log('Reports Fetched:', action.payload); // Log the payload
+      state.loading = false;
+      state.reports = action.payload;
+    })
+    .addCase(GET_REPORTS_BY_USER_FAIL, (state, action) => {
+      console.log('Reports Fetch Failed:', action.payload);
       state.loading = false;
       state.error = action.payload;
     })

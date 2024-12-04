@@ -10,6 +10,7 @@ import SignUpScreen from '@screens/auth/SignUpScreen';
 import HomeScreen from '@screens/HomeScreen';
 import ReportScreen from '@screens/ReportScreen';
 import ReportDetailsScreen from '@screens/ReportDetailsScreen';
+import InformScreen from '@screens/Inform/InformScreen';
 import ReportAPScreen from '@screens/Report/ReportAPScreen';
 import CitiesScreen from '@screens/CitiesScreen';
 import FeedbackScreen from './src/screens/FeedbackScreen'
@@ -20,6 +21,8 @@ import VerifiedScreen from '@screens/auth/VerifiedScreen';
 import Toast from "react-native-toast-message";
 import ProfileScreen from "@screens/user/profileScreen";
 import EditProfileForm from '@screens/user/EditProfileForm';
+import MyReport from '@screens/user/MyReports';
+import MySighting from '@screens/user/MySightings';
 import PrivateRoute from "@components/PrivateRoute";
 import AdminDashboardScreen from "@screens/admin/AdminDashboardScreen";
 import AdminNotificationScreen from "@screens/admin/adminNotification/AdminNotificationScreen";
@@ -93,17 +96,17 @@ export default function Main() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Report" component={ReportScreen} />
         <Stack.Screen name="ReportDetailsScreen" component={ReportDetailsScreen} />
+        <Stack.Screen name="Inform" component={InformScreen} />
         <Stack.Screen name="Cities" component={CitiesScreen} />
         <Stack.Screen name="FeedbackList" component={FeedbackScreen} />
         <Stack.Screen name="ReportForm" component={ReportFormScreen} />
-
-
-
         <Stack.Screen name="Notification" component={NotificationScreen} />
         <Stack.Screen name="verification" component={EmailVerificationScreen} />
         <Stack.Screen name="Address" component={AddressScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="EditProfile" component={EditProfileForm} />
+        <Stack.Screen name="MyReport" component={MyReport} />
+        <Stack.Screen name="MySighting" component={MySighting} />
         <Stack.Screen name="ReportAPScreen" component={ReportAPScreen} />
         <Stack.Screen name="AdminDrawer">
           {(props) => (

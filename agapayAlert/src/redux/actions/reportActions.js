@@ -4,6 +4,12 @@ import {
   GET_REPORTS_REQUEST,
   GET_REPORTS_SUCCESS,
   GET_REPORTS_FAIL,
+  GET_SINGLE_REPORT_REQUEST,
+  GET_SINGLE_REPORT_SUCCESS,
+  GET_SINGLE_REPORT_FAIL,
+  GET_REPORTS_BY_USER_REQUEST,
+  GET_REPORTS_BY_USER_SUCCESS,
+  GET_REPORTS_BY_USER_FAIL,
   CREATE_REPORT_REQUEST,
   CREATE_REPORT_SUCCESS,
   CREATE_REPORT_FAIL,
@@ -43,7 +49,34 @@ export const getReports = () => async (dispatch) => {
     return data; // Return the data
   } catch (error) {
     dispatch({ type: GET_REPORTS_FAIL, payload: error.message });
-    throw error; // Throw the error to be caught in the component
+  }
+};
+
+export const getReportsByUser = () => async (dispatch) => {
+  dispatch({ type: GET_REPORTS_BY_USER_REQUEST });
+  try {
+    const { data } = await axios.get(`${server}/reports/byuser`, axiosConfig);
+    console.log('Fetched Data:', data);
+    dispatch({ type: GET_REPORTS_BY_USER_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({ type: GET_REPORTS_BY_USER_FAIL, payload: error.message });
+  }
+};
+
+export const getSingleReport = (reportId) => async (dispatch) => {
+  dispatch({ type: GET_SINGLE_REPORT_REQUEST });
+  try {
+    const { data } = await axios.get(`${server}/reports/getone/${reportId}`, axiosConfig);
+    console.log('Fetched Data:', data);
+    dispatch({ type: GET_SINGLE_REPORT_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({ type: GET_SINGLE_REPORT_FAIL, payload: error.message });
+  }
+};
+
+const logFormData = (formData) => {
+  for (let pair of formData.entries()) {
+    console.log(`${pair[0]}: ${pair[1]}`);
   }
 };
 
