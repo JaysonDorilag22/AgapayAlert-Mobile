@@ -33,31 +33,17 @@ export const getReports = () => async (dispatch) => {
   }
 };
 
-const logFormData = (formData) => {
-  for (let pair of formData.entries()) {
-    console.log(`${pair[0]}: ${pair[1]}`);
-  }
-};
-
-export const addReport = (formData) => async (dispatch) => {
+export const createReport = (formData) => async (dispatch) => {
   dispatch({ type: CREATE_REPORT_REQUEST });
   try {
-    console.log('Sending request to:', `${server}/reports/create`);
-    logFormData(formData); // Log the FormData contents
-
-    const response = await axios.post(`${server}/reports/create`, formData, axiosConfig);
-
-    console.log('Response:', response);
-    if (response.status === 201) {
-      dispatch({ type: CREATE_REPORT_SUCCESS, payload: response.data });
-    } else {
-      console.error('Unexpected response status:', response.status);
-      dispatch({ type: CREATE_REPORT_FAIL, payload: 'Failed to create report' });
-    }
+    const { data } = await axios.post(`${server}/reports/create`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    dispatch({ type: CREATE_REPORT_SUCCESS, payload: data.report });
   } catch (error) {
-    console.error('Error caught in catch block:', error);
-    const errorMessage = error.response?.data?.message || error.message;
-    dispatch({ type: CREATE_REPORT_FAIL, payload: errorMessage });
+    dispatch({ type: CREATE_REPORT_FAIL, payload: error.message });
   }
 };
 

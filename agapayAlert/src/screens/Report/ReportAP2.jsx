@@ -6,12 +6,13 @@ import RNPickerSelect from 'react-native-picker-select';
 import tw from 'twrnc';
 import ProgressBar from '@components/ProgressBar';
 import styles from '@styles/styles';
-import { Form } from 'formik';
 
 export default function ReportAP2({ nextStep, prevStep, formData, errors, touched, handleChange, handleBlur, setFieldValue }) {
   const navigation = useNavigation();
   const [date, setDate] = useState(new Date());
-  const [show, setShow] = useState(false);
+  const [lastSeenDate, setLastSeenDate] = useState(new Date());
+  const [showDateOfBirthPicker, setShowDateOfBirthPickerState] = useState(false);
+  const [showLastSeenPicker, setShowLastSeenPicker] = useState(false);
   const [sex, setSex] = useState(formData.missingPerson.assignedSexAtBirth || '');
   const [age, setAge] = useState(formData.missingPerson.age || '');
   const [genderIdentity, setGenderIdentity] = useState(formData.missingPerson.genderIdentity || '');
@@ -29,17 +30,27 @@ export default function ReportAP2({ nextStep, prevStep, formData, errors, touche
     { label: 'Self-describe', value: 'self_describe' },
   ];
 
-  const onChange = (event, selectedDate) => {
+  const onChangeDateOfBirth = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
+    setShowDateOfBirthPickerState(Platform.OS === 'ios');
     setDate(currentDate);
     calculateAge(currentDate);
-    setFieldValue('missingPerson.dateOfBirth', currentDate);
-    console.log('formData', formData);
+    setFieldValue('missingPerson.dateOfBirth', currentDate.toISOString());
   };
 
-  const showDatepicker = () => {
-    setShow(true);
+  const onChangeLastSeen = (event, selectedDate) => {
+    const currentDate = selectedDate || lastSeenDate;
+    setShowLastSeenPicker(Platform.OS === 'ios');
+    setLastSeenDate(currentDate);
+    setFieldValue('missingPerson.lastSeen', currentDate.toISOString());
+  };
+
+  const showDateOfBirthPickerHandler = () => {
+    setShowDateOfBirthPickerState(true);
+  };
+
+  const showLastSeenPickerHandler = () => {
+    setShowLastSeenPicker(true);
   };
 
   const calculateAge = (birthDate) => {
@@ -51,8 +62,6 @@ export default function ReportAP2({ nextStep, prevStep, formData, errors, touche
     }
     setAge(age);
     setFieldValue('missingPerson.age', age);
-    console.log('age', age);
-    console.log('birthDate', birthDate);
   };
 
   return (
@@ -99,19 +108,19 @@ export default function ReportAP2({ nextStep, prevStep, formData, errors, touche
               </View>
               <View style={tw`flex-row flex-nowrap`}>
                 <View style={tw`flex-nowrap mr-7`}>
-                  <TouchableOpacity onPress={showDatepicker} style={tw`bg-white border p-3 rounded-md shadow-md pr-8 grow-0 shrink-0`}>
+                  <TouchableOpacity onPress={showDateOfBirthPickerHandler} style={tw`bg-white border p-3 rounded-md shadow-md pr-8 grow-0 shrink-0`}>
                     <Text>
                       {date.toDateString()}
                       </Text>
                   </TouchableOpacity>
-                  {show && (
+                  {showDateOfBirthPicker && (
                     <DateTimePicker
                       testID="dateTimePicker"
                       value={date}
                       mode="date"
                       display="default"
                       maximumDate={new Date()}
-                      onChange={onChange}
+                      onChange={onChangeDateOfBirth}
                     />
                   )}
                 </View>
@@ -122,6 +131,24 @@ export default function ReportAP2({ nextStep, prevStep, formData, errors, touche
                     editable={false}
                   />
                 </View>
+              </View>
+              <Text style={tw`text-base font-bold mt-3 mb-1`}>Last Seen</Text>
+              <View style={tw`flex-nowrap mr-7`}>
+                <TouchableOpacity onPress={showLastSeenPickerHandler} style={tw`bg-white border p-3 rounded-md shadow-md pr-8 grow-0 shrink-0`}>
+                  <Text>
+                    {lastSeenDate.toDateString()}
+                  </Text>
+                </TouchableOpacity>
+                {showLastSeenPicker && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={lastSeenDate}
+                    mode="date"
+                    display="default"
+                    maximumDate={new Date()}
+                    onChange={onChangeLastSeen}
+                  />
+                )}
               </View>
               <Text style={tw`text-base font-bold mt-3 mb-1`}>Assigned Sex at Birth</Text>
               <View style={tw`border rounded-md shadow-md`}>
@@ -166,7 +193,7 @@ export default function ReportAP2({ nextStep, prevStep, formData, errors, touche
                     value={selfDescribe}
                     onChangeText={(value) => {
                       setSelfDescribe(value);
-                      setFormData({ ...formData, selfDescribe: value });
+                      setFieldValue('missingPerson.selfDescribe', value);
                     }}
                   />
                 </View>

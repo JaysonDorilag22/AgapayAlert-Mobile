@@ -25,6 +25,7 @@ import AdminDashboardScreen from "@screens/admin/AdminDashboardScreen";
 import AdminNotificationScreen from "@screens/admin/adminNotification/AdminNotificationScreen";
 import AdminReportScreen from "@screens/admin/adminReport/AdminReportScreen";
 import AlprScreen from "@screens/admin/adminALPR/AlprScreen";
+import ReportFormScreen from '@screens/Report/ReportFormScreen';
 import withAdminNavbar from '@components/withAdminNavbar';
 import icon1 from "./assets/logo1.png";
 import { Image, View } from 'react-native';
@@ -94,6 +95,9 @@ export default function Main() {
         <Stack.Screen name="ReportDetailsScreen" component={ReportDetailsScreen} />
         <Stack.Screen name="Cities" component={CitiesScreen} />
         <Stack.Screen name="FeedbackList" component={FeedbackScreen} />
+        <Stack.Screen name="ReportForm" component={ReportFormScreen} />
+
+
 
         <Stack.Screen name="Notification" component={NotificationScreen} />
         <Stack.Screen name="verification" component={EmailVerificationScreen} />
