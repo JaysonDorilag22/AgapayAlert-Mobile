@@ -18,7 +18,21 @@ import {
   CREATE_POST_REQUEST,
   CREATE_POST_SUCCESS,
   CREATE_POST_FAIL,
+  UPDATE_REPORT_STATUS_REQUEST,
+  UPDATE_REPORT_STATUS_SUCCESS,
+  UPDATE_REPORT_STATUS_FAIL,
 } from "src/constants/actionTypes";
+
+
+export const updateReportStatus = (reportId, status) => async (dispatch) => {
+  dispatch({ type: UPDATE_REPORT_STATUS_REQUEST });
+  try {
+    const { data } = await axios.put(`${server}/reports/status/${reportId}`, { status }, axiosConfig);
+    dispatch({ type: UPDATE_REPORT_STATUS_SUCCESS, payload: data.report });
+  } catch (error) {
+    dispatch({ type: UPDATE_REPORT_STATUS_FAIL, payload: error.message });
+  }
+};
 
 export const getReports = () => async (dispatch) => {
   dispatch({ type: GET_REPORTS_REQUEST });

@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getReports, deleteReport, postToFacebook } from 'src/redux/actions/reportActions';
+import { getReports, deleteReport, postToFacebook, updateReportStatus } from 'src/redux/actions/reportActions';
 import { View, Text, FlatList, TouchableOpacity, ScrollView, ActivityIndicator, Image, Alert, Modal, TextInput } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Toast from 'react-native-toast-message';
 import tw from 'twrnc';
 import ReportModal from './ReportModal';
 import { sendEmailNotification, sendPushNotification } from '@redux/actions/notificationAction';
+import { Picker } from '@react-native-picker/picker';
 
 export default function AdminReportTable() {
   const dispatch = useDispatch();
   const { reports, loading } = useSelector((state) => state.report);
-
+  const [localReports, setLocalReports] = useState([]);
   const [selectedReport, setSelectedReport] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [notificationModalVisible, setNotificationModalVisible] = useState(false);
@@ -23,17 +23,19 @@ export default function AdminReportTable() {
     message: '',
     tier: 'low'
   });
+  const [statusModalVisible, setStatusModalVisible] = useState(false);
+  const [currentStatusReportId, setCurrentStatusReportId] = useState(null);
+
+  const fetchReports = async () => {
+    try {
+      const response = await dispatch(getReports());
+      console.log('Fetched Data:', response);
+    } catch (error) {
+      console.error('Error fetching reports:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const response = await dispatch(getReports());
-        console.log('Fetched Data:', response);
-      } catch (error) {
-        console.error('Error fetching reports:', error);
-      }
-    };
-
     fetchReports();
   }, [dispatch]);
 
@@ -114,8 +116,40 @@ export default function AdminReportTable() {
     return text;
   };
 
+  const handleStatusChange = async (reportId, status) => {
+    setProcessingReportId(reportId);
+    try {
+      await dispatch(updateReportStatus(reportId, status));
+      setLocalReports(localReports.map(report => report._id === reportId ? { ...report, status } : report));
+      Toast.show({ type: 'success', text1: 'Report status updated successfully' });
+    } catch (error) {
+      Toast.show({ type: 'error', text1: 'Error', text2: error.message || 'Failed to update report status' });
+    }
+    setProcessingReportId(null);
+    setStatusModalVisible(false);
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Pending':
+        return 'orange';
+      case 'Confirmed':
+        return 'blue';
+      case 'Solved':
+        return 'green';
+      default:
+        return 'gray';
+    }
+  };
+
   return (
     <View style={tw`bg-gray-100 flex-1`}>
+      <View style={tw`flex-row justify-between items-center p-2 bg-gray-200`}>
+        <Text style={tw`font-bold text-xl`}>Admin Report Table</Text>
+        <TouchableOpacity onPress={fetchReports}>
+          <Icon name="refresh" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
@@ -126,7 +160,6 @@ export default function AdminReportTable() {
               <Text style={tw`font-bold text-center p-2 w-20`}>Image</Text>
               <Text style={tw`font-bold text-center p-2 w-20`}>First Name</Text>
               <Text style={tw`font-bold text-center p-2 w-20`}>Last Name</Text>
-              <Text style={tw`font-bold text-center p-2 w-20`}>Category</Text>
               <Text style={tw`font-bold text-center p-2 w-20`}>Status</Text>
               <Text style={tw`font-bold text-center p-2 w-32`}>Actions</Text>
             </View>
@@ -147,8 +180,15 @@ export default function AdminReportTable() {
                     )}
                     <Text style={tw`text-center p-2 w-20`}>{truncateText(item.missingPerson.firstname, 7)}</Text>
                     <Text style={tw`text-center p-2 w-20`}>{truncateText(item.missingPerson.lastname, 7)}</Text>
-                    <Text style={tw`text-center p-2 w-20`}>{item.category}</Text>
-                    <Text style={tw`text-center p-2 w-20`}>{item.status}</Text>
+                    <TouchableOpacity
+                      style={[tw`text-center p-2 w-20 rounded`, { backgroundColor: getStatusColor(item.status) }]}
+                      onPress={() => {
+                        setCurrentStatusReportId(item._id);
+                        setStatusModalVisible(true);
+                      }}
+                    >
+                      <Text style={tw`text-white text-center`}>{item.status}</Text>
+                    </TouchableOpacity>
                     <View style={tw`flex-row justify-center items-center w-32`}>
                       <TouchableOpacity
                         onPress={() => {
@@ -207,6 +247,35 @@ export default function AdminReportTable() {
           processing={processingReportId === selectedReport._id}
         />
       )}
+      {/* Status Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={statusModalVisible}
+        onRequestClose={() => setStatusModalVisible(false)}
+      >
+        <View style={tw`flex-1 justify-center items-center bg-[rgba(0,0,0,0.5)]`}>
+          <View style={tw`bg-white p-5 rounded-lg w-80`}>
+            <Text style={tw`text-xl font-bold mb-4 text-center`}>Update Status</Text>
+            <Picker
+              selectedValue={reports.find(report => report._id === currentStatusReportId)?.status}
+              onValueChange={(value) => handleStatusChange(currentStatusReportId, value)}
+            >
+              <Picker.Item label="Pending" value="Pending" />
+              <Picker.Item label="Confirmed" value="Confirmed" />
+              <Picker.Item label="Solved" value="Solved" />
+            </Picker>
+            <View style={tw`flex-row justify-around mt-4`}>
+              <TouchableOpacity
+                onPress={() => setStatusModalVisible(false)}
+                style={tw`bg-gray-500 p-2 rounded`}
+              >
+                <Text style={tw`text-white`}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
       {/* Notification Modal */}
       <Modal
         animationType="slide"
