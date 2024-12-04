@@ -1,12 +1,42 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet, Dimensions, ScrollView } from "react-native";
 import { LineChart } from "react-native-chart-kit";
-import reportData from "src/constants/dummyData";
+import { useDispatch, useSelector } from 'react-redux';
+import { getReports } from '@redux/actions/reportActions'; // Ensure this action is defined
 
 export default function LineChartComponent() {
+  const dispatch = useDispatch();
+  const { reports, loading, error } = useSelector((state) => state.report);
+
+  useEffect(() => {
+    dispatch(getReports());
+  }, [dispatch]);
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error: {error}</Text>;
+  }
+
   // Extracting dates and counts for the chart
-  const dates = reportData.map(report => new Date(report.createdAt).toLocaleDateString());
-  const counts = reportData.map((_, index) => index + 1);
+  const dateCounts = reports.reduce((acc, report) => {
+    const date = new Date(report.createdAt).toLocaleDateString();
+    acc[date] = (acc[date] || 0) + 1;
+    return acc;
+  }, {});
+
+  const dates = Object.keys(dateCounts);
+  const counts = Object.values(dateCounts);
+
+  // Ensure all counts are valid numbers
+  const validDates = dates.filter((_, index) => !isNaN(counts[index]) && counts[index] > 0);
+  const validCounts = counts.filter(count => !isNaN(count) && count > 0);
+
+  // Provide default values if no valid data is available
+  const chartLabels = validDates.length > 0 ? validDates : ["No Data"];
+  const chartData = validCounts.length > 0 ? validCounts : [0];
 
   return (
     <View style={styles.container}>
@@ -16,14 +46,14 @@ export default function LineChartComponent() {
       <ScrollView horizontal>
         <LineChart
           data={{
-            labels: dates,
+            labels: chartLabels,
             datasets: [
               {
-                data: counts,
+                data: chartData,
               },
             ],
           }}
-          width={Math.max(Dimensions.get("window").width, dates.length * 80)} // Increase width based on number of dates
+          width={Math.max(Dimensions.get("window").width, chartLabels.length * 80)} // Increase width based on number of dates
           height={220}
           yAxisLabel=""
           yAxisSuffix=""
@@ -32,7 +62,7 @@ export default function LineChartComponent() {
             backgroundColor: "#0000ff",
             backgroundGradientFrom: "#0000ff",
             backgroundGradientTo: "#87cefa",
-            decimalPlaces: 2, // optional, defaults to 2dp
+            decimalPlaces: 0, // optional, defaults to 2dp
             color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
             labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
             style: {

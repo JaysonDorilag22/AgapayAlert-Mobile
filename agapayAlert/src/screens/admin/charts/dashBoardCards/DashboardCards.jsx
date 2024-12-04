@@ -1,23 +1,39 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
-import reportData from "src/constants/dummyData";
+import { useDispatch, useSelector } from 'react-redux';
+import { getReports } from '@redux/actions/reportActions'; // Ensure this action is defined
 
 const { width } = Dimensions.get("window");
 
 export default function DashboardCards() {
-  const totalReports = reportData.length;
+  const dispatch = useDispatch();
+  const { reports, loading, error } = useSelector((state) => state.report);
 
-  const statusCounts = reportData.reduce((acc, report) => {
+  useEffect(() => {
+    dispatch(getReports());
+  }, [dispatch]);
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error: {error}</Text>;
+  }
+
+  const totalReports = reports.length;
+
+  const statusCounts = reports.reduce((acc, report) => {
     acc[report.status] = (acc[report.status] || 0) + 1;
     return acc;
   }, {});
 
-  const categoryCounts = reportData.reduce((acc, report) => {
+  const categoryCounts = reports.reduce((acc, report) => {
     acc[report.category] = (acc[report.category] || 0) + 1;
     return acc;
   }, {});
 
-  const dateCounts = reportData.reduce((acc, report) => {
+  const dateCounts = reports.reduce((acc, report) => {
     const date = new Date(report.createdAt).toLocaleDateString();
     acc[date] = (acc[date] || 0) + 1;
     return acc;
