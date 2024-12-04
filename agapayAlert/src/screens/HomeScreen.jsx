@@ -9,6 +9,7 @@ import tw from "twrnc";
 import { Video } from 'expo-av'; 
 import NavigationBar from '@components/NavigationBar'; // Ensure this path is correct
 import ConfirmReport from './Report/ConfirmReport';
+import FeedbackForm from '@components/FeedbackForm';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -101,7 +102,9 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      <View style={tw`pb-40`}></View>
+      <View style={tw`pb-40`}>
+      <FeedbackForm/>
+      </View>
 
         
       </ScrollView>

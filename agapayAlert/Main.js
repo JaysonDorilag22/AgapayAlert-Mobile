@@ -12,6 +12,7 @@ import ReportScreen from '@screens/ReportScreen';
 import ReportDetailsScreen from '@screens/ReportDetailsScreen';
 import ReportAPScreen from '@screens/Report/ReportAPScreen';
 import CitiesScreen from '@screens/CitiesScreen';
+import FeedbackScreen from './src/screens/FeedbackScreen'
 import NotificationScreen from '@screens/NotificationScreen';
 import EmailVerificationScreen from '@screens/auth/EmailVerificationScreen';
 import AddressScreen from '@screens/auth/AddressScreen';
@@ -92,6 +93,8 @@ export default function Main() {
         <Stack.Screen name="Report" component={ReportScreen} />
         <Stack.Screen name="ReportDetailsScreen" component={ReportDetailsScreen} />
         <Stack.Screen name="Cities" component={CitiesScreen} />
+        <Stack.Screen name="FeedbackList" component={FeedbackScreen} />
+
         <Stack.Screen name="Notification" component={NotificationScreen} />
         <Stack.Screen name="verification" component={EmailVerificationScreen} />
         <Stack.Screen name="Address" component={AddressScreen} />

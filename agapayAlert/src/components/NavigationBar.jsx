@@ -14,6 +14,7 @@ export default function NavbarWithSubmenu({ navigation }) {
     { name: "Reports", route: "Report", icon: "file-text" },
     { name: "Cities", route: "Cities", icon: "building" },
     { name: "Alerts", route: "Notification", icon: "bell" },
+    { name: "Feedback", route: "FeedbackList", icon: "comments" }, // New feedback list item
   ];
 
   return (
