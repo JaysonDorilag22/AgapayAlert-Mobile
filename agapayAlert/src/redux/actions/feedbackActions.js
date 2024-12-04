@@ -163,7 +163,7 @@ export const getOverallRatings = () => async (dispatch) => {
   try {
     dispatch({ type: GET_OVERALL_RATINGS_REQUEST });
 
-    const response = await axios.get(`${server}/overall-ratings`, axiosConfig);
+    const response = await axios.get(`${server}/feedbacks/overall-ratings`, axiosConfig);
 
     dispatch({
       type: GET_OVERALL_RATINGS_SUCCESS,

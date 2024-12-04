@@ -8,6 +8,7 @@ import NavbarWithSubmenu from '@components/NavigationBar';
 import StarRating from 'react-native-star-rating-widget';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import FeedbackForm from '@components/FeedbackForm';
+import OverallRatingChart from './admin/adminFeedback/OverallRatingChart';
 
 export default function FeedbackScreen() {
   const navigation = useNavigation();
@@ -52,6 +53,7 @@ export default function FeedbackScreen() {
     <View style={tw`flex-1`}>
       <NavbarWithSubmenu navigation={navigation} />
       <ScrollView contentContainerStyle={tw`p-4`}>
+        <OverallRatingChart/>
         <FeedbackForm />
         <Text style={tw`text-lg font-bold mb-4 mt-8`}>Your Feedback</Text>
         {loading ? (

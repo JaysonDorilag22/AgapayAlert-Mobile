@@ -75,7 +75,7 @@ export const feedbackReducer = createReducer(initialState, (builder) => {
       state.error = null;
     })
     .addCase(GET_USER_FEEDBACK_SUCCESS, (state, action) => {
-      console.log('User Feedback Fetched:', action.payload); // Log the
+      console.log('User Feedback Fetched:', action.payload); // Log the payload
       state.loading = false;
       state.userFeedback = action.payload;
     })
@@ -114,6 +114,7 @@ export const feedbackReducer = createReducer(initialState, (builder) => {
       state.error = null;
     })
     .addCase(GET_OVERALL_RATINGS_SUCCESS, (state, action) => {
+      console.log('Overall Ratings Fetched:', action.payload); // Log the payload
       state.loading = false;
       state.overallRatings = action.payload;
     })
